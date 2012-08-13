@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-08-13T09:33:49-07:00</updated>
+  <updated>2012-08-13T09:48:07-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -31,11 +31,16 @@ implementation for nearest neighbors searching in
 about how to make it faster and more flexible, including adding the ability
 to specify distance metrics other than euclidean and minkowski.</p>
 
+<p>In order to accomplish this, I&#8217;d like to have a set of distance metric
+functions which take two vectors and compute a distance.  There would
+be many functions with similar call signatures which could then be
+plugged into a code that would iterate over a set of vectors and
+compute the appropriate distances.</p>
+
 <h3>Pure python version</h3>
 
-<p>The scenario is this: we need a way to specify a function which computes a
-distance between two vectors, and can be quickly called from cython code.
-In pure python, int might look something like this:</p>
+<p>In pure python, the implementation described above might look something
+like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -85,7 +90,7 @@ like this:</p>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
 </span><span class='line'>        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
-</span><span class='line'>      <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+</span><span class='line'>            <span class="n">D</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">return</span> <span class="n">D</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -106,7 +111,8 @@ In [4]: timeit pairwise(X)
 1 loops, best of 3: 6.51 s per loop
 </code></pre>
 
-<p>Just over a second to compute 250,000 distances.  Not too bad&#8230; or is it?</p>
+<p>It takes nearly seven seconds to compute 250,000 distances.  This is much
+too slow.</p>
 
 <h3>Cython Speedup</h3>
 
@@ -405,7 +411,7 @@ In [4]: timeit pairwise(X)
 by switching to typed memoryviews rather than the numpy interface.  Still,
 our function is creating memoryview objects each time we slice the array.  We
 can determine how much overhead this is generating by using raw C pointers
-instead.  It&#8217;s not as clean, but it should be very fast:</p>
+instead.  It is not as clean, but it should be very fast:</p>
 
 <h3>Raw Pointers</h3>
 
@@ -525,7 +531,7 @@ way of doing things, it does lead to very fast code, as we will see:</p>
 <p>Instead of passing around slices of arrays, we&#8217;ve accessed the raw memory
 buffer using C pointer syntax.  This is not as easy to read, and can lead
 to <code>glibc</code> errors or segmentation faults if we&#8217;re not careful.  Testing
-this implementation, we find that it&#8217;s comaprably very fast:</p>
+this implementation, we find that it is extremely fast:</p>
 
 <pre><code>In [1]: import numpy as np
 
@@ -540,9 +546,10 @@ In [4]: timeit pairwise(X)
 <p>This is another factor of 10 faster than the memoryview benchmark above!
 Essentially, what this is telling us is that creating a memoryview slice
 takes about 0.02 / 500,000 = 40 nanoseconds on our machine.  This is extremely
-fast, but because we&#8217;re performing this operation half a million times, it&#8217;s
-significant compared to the rest of our computation.  If our vectors were,
-say, length 1000, this cost may not be a significant difference.</p>
+fast, but because we&#8217;re performing this operation half a million times, the
+cost of the allocations is significant compared to the rest of our
+computation.  If our vectors were, say, length 1000, this cost may not be
+a significant percentage of the total cost.</p>
 
 <p>So what are we left with?  Do we need to use raw pointers in all circumstances
 when working with collections of small vectors?  Perhaps not.</p>
@@ -551,7 +558,7 @@ when working with collections of small vectors?  Perhaps not.</p>
 
 <p>The creation of memoryview slices, though extremely fast, is causing a problem
 simply because we&#8217;re creating so many slices.  Here is an alternative which
-uses no raw pointers, but is much more competetive:</p>
+uses no raw pointers, but matches the speed of raw pointers:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -662,11 +669,11 @@ In [4]: timeit pairwise(X)
 100 loops, best of 3: 2.45 ms per loop
 </code></pre>
 
-<p>Just as fast as using raw pointers, but much more clean.</p>
+<p>Just as fast as using raw pointers, but much cleaner and easier to read.</p>
 
 <h3>Summary</h3>
 
-<p>Here are our timing results summarized:</p>
+<p>Here are the timing results we&#8217;ve seen above:</p>
 
 <ul>
 <li><strong>Python + numpy</strong>: 6510 ms</li>
