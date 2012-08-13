@@ -19,12 +19,17 @@ implementation for nearest neighbors searching in
 about how to make it faster and more flexible, including adding the ability
 to specify distance metrics other than euclidean and minkowski.
 
+In order to accomplish this, I'd like to have a set of distance metric
+functions which take two vectors and compute a distance.  There would
+be many functions with similar call signatures which could then be
+plugged into a code that would iterate over a set of vectors and
+compute the appropriate distances.
+
 
 ### Pure python version ###
 
-The scenario is this: we need a way to specify a function which computes a
-distance between two vectors, and can be quickly called from cython code.
-In pure python, int might look something like this:
+In pure python, the implementation described above might look something
+like this:
 
 ``` python
 # memview_bench_v1.py
@@ -54,7 +59,7 @@ def pairwise(X, metric=euclidean_distance):
 
     for i in range(n_samples):
         for j in range(n_samples):
- 	    D[i, j] = metric(X[i], X[j])
+            D[i, j] = metric(X[i], X[j])
 
     return D
 ```
@@ -73,7 +78,9 @@ us a good benchmark for comparison with alternatives below.  Using the
     In [4]: timeit pairwise(X)
     1 loops, best of 3: 6.51 s per loop
 
-Just over a second to compute 250,000 distances.  Not too bad... or is it?
+It takes nearly seven seconds to compute 250,000 distances.  This is much
+too slow.
+
 
 ### Cython Speedup ###
 
@@ -256,7 +263,7 @@ This gives another factor of 30 improvement over the previous version, simply
 by switching to typed memoryviews rather than the numpy interface.  Still,
 our function is creating memoryview objects each time we slice the array.  We
 can determine how much overhead this is generating by using raw C pointers
-instead.  It's not as clean, but it should be very fast:
+instead.  It is not as clean, but it should be very fast:
 
 ### Raw Pointers ###
 
@@ -323,7 +330,7 @@ def pairwise(double[:, ::1] X not None,
 Instead of passing around slices of arrays, we've accessed the raw memory
 buffer using C pointer syntax.  This is not as easy to read, and can lead
 to `glibc` errors or segmentation faults if we're not careful.  Testing
-this implementation, we find that it's comaprably very fast:
+this implementation, we find that it is extremely fast:
 
     In [1]: import numpy as np
 
@@ -337,9 +344,10 @@ this implementation, we find that it's comaprably very fast:
 This is another factor of 10 faster than the memoryview benchmark above!
 Essentially, what this is telling us is that creating a memoryview slice
 takes about 0.02 / 500,000 = 40 nanoseconds on our machine.  This is extremely
-fast, but because we're performing this operation half a million times, it's
-significant compared to the rest of our computation.  If our vectors were,
-say, length 1000, this cost may not be a significant difference.
+fast, but because we're performing this operation half a million times, the
+cost of the allocations is significant compared to the rest of our
+computation.  If our vectors were, say, length 1000, this cost may not be
+a significant percentage of the total cost.
 
 So what are we left with?  Do we need to use raw pointers in all circumstances
 when working with collections of small vectors?  Perhaps not.
@@ -348,7 +356,7 @@ when working with collections of small vectors?  Perhaps not.
 
 The creation of memoryview slices, though extremely fast, is causing a problem
 simply because we're creating so many slices.  Here is an alternative which
-uses no raw pointers, but is much more competetive:
+uses no raw pointers, but matches the speed of raw pointers:
 
 ``` cython
 # memview_bench_v5.pyx
@@ -411,10 +419,10 @@ Timing this implementation we find the following:
     In [4]: timeit pairwise(X)
     100 loops, best of 3: 2.45 ms per loop
 
-Just as fast as using raw pointers, but much more clean.
+Just as fast as using raw pointers, but much cleaner and easier to read.
 
 ### Summary ###
-Here are our timing results summarized:
+Here are the timing results we've seen above:
 
 - **Python + numpy**: 6510 ms
 - **Cython + numpy**: 668 ms
