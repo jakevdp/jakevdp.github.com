@@ -441,3 +441,12 @@ is compararable to the cost of building the slice.
 The moral of the story?  *Use typed memoryviews.*  It will lead to fast cython
 code which is cleaner, more readable, and more easily debuggable than any other
 alternative.
+
+**Update**: All of the above scripts are now available as an ipython
+notebook: [memview_bench.ipynb](/scripts/memview_bench.ipynb).
+For information on how to view this file, see the
+[IPython page](http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html)
+Alternatively, you can view this notebook (but not modify it) using the
+nbviewer [here](http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/memview_bench.ipynb).
+
+Thanks to Dave for the tip.
