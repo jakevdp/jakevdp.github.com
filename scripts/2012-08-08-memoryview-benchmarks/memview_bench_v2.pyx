@@ -47,3 +47,18 @@ def pairwise(np.ndarray[double, ndim=2, mode='c'] X not None,
             D[i, j] = dist_func(X[i], X[j])
 
     return D
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def pairwise_inline(np.ndarray[double, ndim=2, mode='c'] X not None):
+    cdef np.intp_t i, j, n_samples
+    n_samples = X.shape[0]
+
+    cdef np.ndarray[double, ndim=2, mode='c'] D = np.empty((n_samples,
+                                                            n_samples))
+    for i in range(n_samples):
+        for j in range(n_samples):
+            D[i, j] = euclidean_distance(X[i], X[j])
+
+    return D

@@ -17,3 +17,11 @@ def pairwise(X, metric=euclidean_distance):
  	    D[i, j] = metric(X[i], X[j])
 
     return D
+
+
+def pairwise_np(X):
+    # (x - y)^2 = x^2 - 2 x y + y^2
+    X2 = np.sum(X * X, 1)
+    XY = np.dot(X, X.T)
+
+    return np.sqrt(X2 - 2 * XY + X2[:, None])
