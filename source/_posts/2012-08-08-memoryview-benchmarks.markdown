@@ -25,6 +25,7 @@ be many functions with similar call signatures which could then be
 plugged into a code that would iterate over a set of vectors and
 compute the appropriate distances.
 
+<!-- more -->
 
 ### Pure python version ###
 

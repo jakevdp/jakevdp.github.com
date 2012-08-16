@@ -1,4 +1,8 @@
+The correct ruby version needs to be used:
 source ../RVM_SOURCEME
 rake generate
 rake preview
 firefox http://localhost:4000
+
+New post
+rake new_post["post title"]
