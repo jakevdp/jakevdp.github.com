@@ -1,0 +1,516 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>memoryview benchmarks 2 - Pythonic Perambulations</title>
+  <meta name="author" content="Jake Vanderplas">
+
+  
+  <meta name="description" content="In the previous post, I explored
+how cython typed memoryviews can be used to speed up repeated array
+operations. It became clear that typed &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Pythonic Perambulations" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34061646-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Pythonic Perambulations</a></h1>
+  
+    <h2>Musings and ramblings through the world of python</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jakevdp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Memoryview Benchmarks 2</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-16T14:19:00-07:00" pubdate data-updated="true">Aug 16<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>In the <a href="/blog/2012/08/08/memoryview-benchmarks/">previous post</a>, I explored
+how cython typed memoryviews can be used to speed up repeated array
+operations.  It became clear that typed memoryviews are superior to
+the ndarray syntax for slicing, and as fast as raw pointers for single
+element access.  In the comments, Mathieu brought up an interesting
+question: is the ndarray syntax as good as typed memoryviews if you&#8217;re
+not doing slicing?</p>
+
+<p>The answer turns out to be yes, <em>unless</em> the compiler tries to inline your
+function.</p>
+
+<!-- more -->
+
+
+<h3>Inlined Memoryview</h3>
+
+<p>We&#8217;ll use a slightly simpler benchmark script here for simplicity.  We&#8217;ll
+use inlined typed memoryviews for the inner function, and call this function
+within an outer loop:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='cython'><span class='line'><span class="k">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="k">cimport</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="k">cimport</span> <span class="nn">cython</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">boundscheck</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">wraparound</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="k">cdef</span> <span class="kr">inline</span> <span class="kt">double</span> <span class="nf">inner_func</span><span class="p">(</span><span class="n">double</span><span class="p">[:,</span> <span class="p">::</span><span class="mf">1</span><span class="p">]</span> <span class="n">X</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">loop_1</span><span class="p">(</span><span class="nb">int</span> <span class="n">N</span><span class="p">,</span> <span class="n">switch</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">cdef</span> <span class="kt">double</span>[<span class="p">:,</span> <span class="p">::</span><span class="mf">1</span><span class="p">]</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mf">100</span><span class="p">,</span> <span class="mf">100</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+</span><span class='line'>        <span class="c"># this should be inlined by the compiler</span>
+</span><span class='line'>        <span class="n">inner_func</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The inner function is called <code>N</code> times.  We&#8217;ve used the &#8220;inline&#8221; keyword here:
+it turns out this is optional with common compiler optimizations turned on.
+<code>gcc</code> and other compilers are smart enough to figure out that this function
+should be inlined, even if the cython code doesn&#8217;t mark it as such.  Timing
+the function on one million loops gives us our comparison benchmark:</p>
+
+<pre><code>%timeit loop_1(1E6)
+100000 loops, best of 3: 10.1 us per loop
+</code></pre>
+
+<p>Just over a millisecond to perform this loop one million times.</p>
+
+<h3>Non-inlined Memoryview</h3>
+
+<p>Because the compilers are generally so smart, we actually need to be a bit
+clever to make sure our function is <em>not</em> inlined.  We&#8217;ll do that through
+a switch statement in the loop call, which selects between two possible
+inner functions.  This may seem a bit contrived, but it could come up
+in practice: for example, if we wanted to create a KDTree for nearest neighbor
+searches which can use one of several distance metrics within a single tree
+framework, we might be tempted to try a solution like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='cython'><span class='line'><span class="k">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="k">cimport</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="k">cimport</span> <span class="nn">cython</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">ctypedef</span> <span class="n">double</span> <span class="p">(</span><span class="o">*</span><span class="n">inner_func_ptr</span><span class="p">)(</span><span class="n">double</span><span class="p">[:,</span> <span class="p">::</span><span class="mf">1</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">boundscheck</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">wraparound</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="k">cdef</span> <span class="kt">double</span> <span class="nf">inner_func_1</span><span class="p">(</span><span class="n">double</span><span class="p">[:,</span> <span class="p">::</span><span class="mf">1</span><span class="p">]</span> <span class="n">X</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">boundscheck</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">wraparound</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="k">cdef</span> <span class="kt">double</span> <span class="nf">inner_func_2</span><span class="p">(</span><span class="n">double</span><span class="p">[:,</span> <span class="p">::</span><span class="mf">1</span><span class="p">]</span> <span class="n">X</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">loop_2</span><span class="p">(</span><span class="nb">int</span> <span class="n">N</span><span class="p">,</span> <span class="n">switch</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</span><span class='line'>    <span class="c"># use a switch to ensure that inlining can&#39;t happen: compilers</span>
+</span><span class='line'>    <span class="c"># are usually smart enough to figure it out otherwise.</span>
+</span><span class='line'>    <span class="k">cdef</span> <span class="kt">inner_func_ptr</span> <span class="nf">func</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">switch</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">func</span> <span class="o">=</span> <span class="n">inner_func_1</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">func</span> <span class="o">=</span> <span class="n">inner_func_2</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">cdef</span> <span class="kt">double</span>[<span class="p">:,</span> <span class="p">::</span><span class="mf">1</span><span class="p">]</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mf">100</span><span class="p">,</span> <span class="mf">100</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">func</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By adding the switch function, it means the compiler cannot know at compile
+time which of the inner functions will be used in the loop, and they
+cannot be inlined.  The timing results are as follows:</p>
+
+<pre><code>%timeit loop_2(1E6)
+10 loops, best of 3: 22.9 ms per loop
+</code></pre>
+
+<p>Using a non-inlined function makes things significantly slower in this case!
+So, if you&#8217;re repeatedly calling a small function, inlining can be <em>very</em>
+important for optimal execution times.</p>
+
+<h3>The Problem with ndarray</h3>
+
+<p>It turns out that beyond slicing, the problem with the ndarray type is that
+multi-dimensional arrays require relatively expensive buffer checks whenever
+a function is called.  This causes similar code with ndarrays to be
+significantly slower:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='cython'><span class='line'><span class="k">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="k">cimport</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="k">cimport</span> <span class="nn">cython</span>
+</span><span class='line'>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">boundscheck</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="nd">@cython</span><span class="o">.</span><span class="n">wraparound</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'><span class="k">cdef</span> <span class="kr">inline</span> <span class="kt">double</span> <span class="nf">inner_func</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="n">double</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;c&#39;</span><span class="p">]</span> <span class="n">X</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="mf">0</span><span class="p">,</span> <span class="mf">0</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">loop_3</span><span class="p">(</span><span class="nb">int</span> <span class="n">N</span><span class="p">,</span> <span class="n">switch</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">cdef</span> <span class="kt">np</span>.<span class="kt">ndarray</span>[<span class="nf">double</span><span class="p">,</span> <span class="nf">ndim</span><span class="o">=</span><span class="mf">2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;c&#39;</span><span class="p">]</span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mf">100</span><span class="p">,</span> <span class="mf">100</span><span class="p">))</span>
+</span><span class='line'>    <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">inner_func</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Compiling this gives the following warning:</p>
+
+<pre><code>warning: Buffer unpacking not optimized away.
+</code></pre>
+
+<p>The result of this buffer unpacking in each loop is a much slower execution
+time:</p>
+
+<pre><code>%timeit loop_3(1E6)
+1 loops, best of 3: 617 ms per loop
+</code></pre>
+
+<p>This is about 30 times slower than the non-inlined version of the memoryview,
+and 6000 times slower than the inlined memoryview above!
+Is there any way around this?
+Well, there are two options: raw pointers, or explicit inlining in the
+code (that is, copying and pasting your code).  Both options will have
+speeds similar to that of the inlined memoryviews, but each solution
+is inconvenient in its own way.</p>
+
+<p>So why wouldn&#8217;t you use memoryviews?  Well, several projects strive to
+remain compatible with python 2.4 (one example is scipy) and python 2.4 is
+not compatible with cython&#8217;s typed memoryviews.  Other projects seek to
+remain compatible with earlier cython versions which don&#8217;t support
+the relatively new memoryview syntax.
+In these situations, one of the two partial solutions above
+probably need to be used.  In practice, I have usually resorted to passing
+around raw pointers.</p>
+
+<h3>Summary</h3>
+
+<p>Here are the timings we found above:</p>
+
+<ul>
+<li>Inlined memoryviews: 0.1 ms</li>
+<li>Non-inlined memoryviews: 22.9 ms</li>
+<li>Inlined ndarray: 617 ms</li>
+</ul>
+
+
+<p>So we see yet another reason that typed memoryviews are superior to
+the ndarray syntax: they not only have very speedy slicing, but also
+play well with the compiler&#8217;s inlining optimization.  Granted, these
+time differences will be insignificant if your inlined function does
+some non-negligible amount of computation, but there may be situations
+where this affects things.</p>
+
+<h3>Back to my problem</h3>
+
+<p>If you recall, I started all of this because I wanted to create a binary tree
+that can compute pairwise distances with arbitrary distance metrics.  Where
+do these results put me?  Not in a great position, it turns out.  Abstracting
+out the distance function so that the same machinery can be used with
+different functions will lead to speed penalties from the inability to inline.
+C++ libraries accomplish this through compile-time conditionals (i.e. templates)
+but cython doesn&#8217;t have this capability.  Short of duplicating the tree
+framework with a new hard-coded (and thus inlinable) distance metric may
+be the only option.  That, or wrapping a templated C++ implementation.</p>
+
+<p>All of the above scripts are available as an ipython
+notebook: <a href="/scripts/memview_bench_2.ipynb">memview_bench_2.ipynb</a>.
+For information on how to view this file, see the
+<a href="http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html">IPython page</a>
+Alternatively, you can view this notebook (but not modify it) using the
+nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/memview_bench_2.ipynb">here</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jake Vanderplas</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-16T14:19:00-07:00" pubdate data-updated="true">Aug 16<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2/" data-via="" data-counturl="http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/08/08/memoryview-benchmarks/" title="Previous Post: Memoryview Benchmarks">&laquo; Memoryview Benchmarks</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/08/16/memoryview-benchmarks-2/">memoryview benchmarks 2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/08/08/memoryview-benchmarks/">Memoryview Benchmarks</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jakevdp">@jakevdp</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jakevdp',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Jake Vanderplas -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pythonicperambulations';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2/';
+        var disqus_url = 'http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
