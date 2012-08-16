@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "memoryview benchmarks 2"
+title: "Memoryview Benchmarks 2"
 date: 2012-08-16 14:19
 comments: true
 categories: 
@@ -175,7 +175,7 @@ do these results put me?  Not in a great position, it turns out.  Abstracting
 out the distance function so that the same machinery can be used with
 different functions will lead to speed penalties from the inability to inline.
 C++ libraries accomplish this through compile-time conditionals (i.e. templates)
-but cython doesn't have this capability.  Short of duplicating the tree
+but cython doesn't have this capability.  Duplicating the tree
 framework with a new hard-coded (and thus inlinable) distance metric may
 be the only option.  That, or wrapping a templated C++ implementation.
 
