@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-08-16T15:25:29-07:00</updated>
+  <updated>2012-08-16T15:32:56-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[memoryview benchmarks 2]]></title>
+    <title type="html"><![CDATA[Memoryview Benchmarks 2]]></title>
     <link href="http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2/"/>
     <updated>2012-08-16T14:19:00-07:00</updated>
     <id>http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2</id>
@@ -259,7 +259,7 @@ do these results put me?  Not in a great position, it turns out.  Abstracting
 out the distance function so that the same machinery can be used with
 different functions will lead to speed penalties from the inability to inline.
 C++ libraries accomplish this through compile-time conditionals (i.e. templates)
-but cython doesn&#8217;t have this capability.  Short of duplicating the tree
+but cython doesn&#8217;t have this capability.  Duplicating the tree
 framework with a new hard-coded (and thus inlinable) distance metric may
 be the only option.  That, or wrapping a templated C++ implementation.</p>
 
