@@ -33,6 +33,26 @@ the matplotlib &hellip;">
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+<!-- Enable mathjax support -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+<!--
+MathJax.Hub.Config({
+jax: ["input/TeX", "output/HTML-CSS"],
+tex2jax: {
+inlineMath: [ ['$', '$'] ],
+displayMath: [ ['$$', '$$']],
+processEscapes: true,
+skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+},
+messageStyle: "none",
+"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+-->
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
   
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -274,7 +294,7 @@ means that the animations display much more quickly.</p>
 
 <p>We end with an optional save command, and then a show command to show the
 result.  Here&#8217;s what the script generates:
-<video width='360' height='270' preload='none' controls poster='  /downloads/videos/basic_animation_frame.png'><source src='/downloads/videos/basic_animation.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+<video width='360' height='270' preload='none' controls poster=' /downloads/videos/basic_animation_frame.png'><source src='/downloads/videos/basic_animation.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
 
 <p>This framework for generating and saving animations is very powerful and
 flexible: if we put some physics into the <code>animate</code> function, the possibilities
@@ -586,7 +606,7 @@ if our math is correct: it&#8217;s comforting that it is).  The video below
 lasts only ten seconds, but by running the script you can watch the
 pendulum chaotically oscillate until your laptop runs out of power:</p>
 
-<p><video width='360' height='270' preload='none' controls poster='  /downloads/videos/double_pendulum_frame.png'><source src='/downloads/videos/double_pendulum.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+<p><video width='360' height='270' preload='none' controls poster=' /downloads/videos/double_pendulum_frame.png'><source src='/downloads/videos/double_pendulum.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
 
 <h3>Particles in a Box</h3>
 
@@ -908,7 +928,7 @@ other elements, like computation of the temperature and pressure to demonstrate
 the ideal gas law, or real-time plotting of the velocity distribution to
 watch it approach the expected Maxwellian distribution.  It opens up many
 possibilities for virtual physics demos&#8230;
-<video width='360' height='270' preload='none' controls poster='  /downloads/videos/particle_box_frame.png'><source src='/downloads/videos/particle_box.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+<video width='360' height='270' preload='none' controls poster=' /downloads/videos/particle_box_frame.png'><source src='/downloads/videos/particle_box.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
 
 <h3>Summing it up</h3>
 
@@ -946,7 +966,7 @@ with?</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/" data-via="" data-counturl="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/" data-via="jakevdp" data-counturl="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/" >Tweet</a>
   
   
   
@@ -1020,6 +1040,22 @@ with?</p>
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("jakevdp", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/jakevdp" class="twitter-follow-button" data-show-count="false">Follow @jakevdp</a>
+  
+</section>
 
 
 

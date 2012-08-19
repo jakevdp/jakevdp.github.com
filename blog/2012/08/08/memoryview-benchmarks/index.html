@@ -32,6 +32,26 @@ way of working with memory buffers in cython. I &hellip;">
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 
+<!-- Enable mathjax support -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+<!--
+MathJax.Hub.Config({
+jax: ["input/TeX", "output/HTML-CSS"],
+tex2jax: {
+inlineMath: [ ['$', '$'] ],
+displayMath: [ ['$$', '$$']],
+processEscapes: true,
+skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+},
+messageStyle: "none",
+"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+-->
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+
   
   <script type="text/javascript">
     var _gaq = _gaq || [];
@@ -789,11 +809,11 @@ code which is cleaner, more readable, and more easily debuggable than any other
 alternative.</p>
 
 <p><strong>Update</strong>: All of the above scripts are now available as an ipython
-notebook: <a href="/scripts/memview_bench.ipynb">memview_bench.ipynb</a>.
+notebook: <a href="/downloads/notebooks/memview_bench.ipynb">memview_bench.ipynb</a>.
 For information on how to view this file, see the
 <a href="http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html">IPython page</a>
 Alternatively, you can view this notebook (but not modify it) using the
-nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/memview_bench.ipynb">here</a>.</p>
+nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/downloads/notebooks/memview_bench.ipynb">here</a>.</p>
 
 <p>Thanks to Dave for the tip.</p>
 </div>
@@ -826,7 +846,7 @@ nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/mem
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2012/08/08/memoryview-benchmarks/" data-via="" data-counturl="http://jakevdp.github.com/blog/2012/08/08/memoryview-benchmarks/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2012/08/08/memoryview-benchmarks/" data-via="jakevdp" data-counturl="http://jakevdp.github.com/blog/2012/08/08/memoryview-benchmarks/" >Tweet</a>
   
   
   
@@ -900,6 +920,22 @@ nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/mem
   <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("jakevdp", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/jakevdp" class="twitter-follow-button" data-show-count="false">Follow @jakevdp</a>
+  
+</section>
 
 
 

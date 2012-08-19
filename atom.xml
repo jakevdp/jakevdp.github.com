@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-08-18T18:02:53-07:00</updated>
+  <updated>2012-08-19T14:06:41-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -184,7 +184,7 @@ means that the animations display much more quickly.</p>
 
 <p>We end with an optional save command, and then a show command to show the
 result.  Here&#8217;s what the script generates:
-<video width='360' height='270' preload='none' controls poster='  /downloads/videos/basic_animation_frame.png'><source src='http://jakevdp.github.com/downloads/videos/basic_animation.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+<video width='360' height='270' preload='none' controls poster=' /downloads/videos/basic_animation_frame.png'><source src='http://jakevdp.github.com/downloads/videos/basic_animation.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
 
 <p>This framework for generating and saving animations is very powerful and
 flexible: if we put some physics into the <code>animate</code> function, the possibilities
@@ -496,7 +496,7 @@ if our math is correct: it&#8217;s comforting that it is).  The video below
 lasts only ten seconds, but by running the script you can watch the
 pendulum chaotically oscillate until your laptop runs out of power:</p>
 
-<p><video width='360' height='270' preload='none' controls poster='  /downloads/videos/double_pendulum_frame.png'><source src='http://jakevdp.github.com/downloads/videos/double_pendulum.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+<p><video width='360' height='270' preload='none' controls poster=' /downloads/videos/double_pendulum_frame.png'><source src='http://jakevdp.github.com/downloads/videos/double_pendulum.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
 
 <h3>Particles in a Box</h3>
 
@@ -818,7 +818,7 @@ other elements, like computation of the temperature and pressure to demonstrate
 the ideal gas law, or real-time plotting of the velocity distribution to
 watch it approach the expected Maxwellian distribution.  It opens up many
 possibilities for virtual physics demos&#8230;
-<video width='360' height='270' preload='none' controls poster='  /downloads/videos/particle_box_frame.png'><source src='http://jakevdp.github.com/downloads/videos/particle_box.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+<video width='360' height='270' preload='none' controls poster=' /downloads/videos/particle_box_frame.png'><source src='http://jakevdp.github.com/downloads/videos/particle_box.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
 
 <h3>Summing it up</h3>
 
@@ -1080,11 +1080,11 @@ framework with a new hard-coded (and thus inlinable) distance metric may
 be the only option.  That, or wrapping a templated C++ implementation.</p>
 
 <p>All of the above scripts are available as an ipython
-notebook: <a href="http://jakevdp.github.com/scripts/memview_bench_2.ipynb">memview_bench_2.ipynb</a>.
+notebook: <a href="http://jakevdp.github.com/downloads/notebooks/memview_bench_2.ipynb">memview_bench_2.ipynb</a>.
 For information on how to view this file, see the
 <a href="http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html">IPython page</a>
 Alternatively, you can view this notebook (but not modify it) using the
-nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/memview_bench_2.ipynb">here</a>.</p>
+nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/downloads/notebooks/memview_bench_2.ipynb">here</a>.</p>
 ]]></content>
   </entry>
   
@@ -1775,11 +1775,11 @@ code which is cleaner, more readable, and more easily debuggable than any other
 alternative.</p>
 
 <p><strong>Update</strong>: All of the above scripts are now available as an ipython
-notebook: <a href="http://jakevdp.github.com/scripts/memview_bench.ipynb">memview_bench.ipynb</a>.
+notebook: <a href="http://jakevdp.github.com/downloads/notebooks/memview_bench.ipynb">memview_bench.ipynb</a>.
 For information on how to view this file, see the
 <a href="http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html">IPython page</a>
 Alternatively, you can view this notebook (but not modify it) using the
-nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/memview_bench.ipynb">here</a>.</p>
+nbviewer <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/downloads/notebooks/memview_bench.ipynb">here</a>.</p>
 
 <p>Thanks to Dave for the tip.</p>
 ]]></content>
