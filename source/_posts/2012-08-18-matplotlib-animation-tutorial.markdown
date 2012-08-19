@@ -79,7 +79,7 @@ means that the animations display much more quickly.
 
 We end with an optional save command, and then a show command to show the
 result.  Here's what the script generates:
-{% video /downloads/videos/basic_animation.mp4 360 270  /downloads/videos/basic_animation_frame.png %}
+{% video /downloads/videos/basic_animation.mp4 360 270 /downloads/videos/basic_animation_frame.png %}
 
 This framework for generating and saving animations is very powerful and
 flexible: if we put some physics into the `animate` function, the possibilities
@@ -106,7 +106,7 @@ if our math is correct: it's comforting that it is).  The video below
 lasts only ten seconds, but by running the script you can watch the
 pendulum chaotically oscillate until your laptop runs out of power:
 
-{% video /downloads/videos/double_pendulum.mp4 360 270  /downloads/videos/double_pendulum_frame.png %}
+{% video /downloads/videos/double_pendulum.mp4 360 270 /downloads/videos/double_pendulum_frame.png %}
 
 ### Particles in a Box ###
 
@@ -126,7 +126,7 @@ other elements, like computation of the temperature and pressure to demonstrate
 the ideal gas law, or real-time plotting of the velocity distribution to
 watch it approach the expected Maxwellian distribution.  It opens up many
 possibilities for virtual physics demos...
-{% video /downloads/videos/particle_box.mp4 360 270  /downloads/videos/particle_box_frame.png %}
+{% video /downloads/videos/particle_box.mp4 360 270 /downloads/videos/particle_box_frame.png %}
 
 ### Summing it up ###
 The matplotlib animation module is an excellent addition to what was already
