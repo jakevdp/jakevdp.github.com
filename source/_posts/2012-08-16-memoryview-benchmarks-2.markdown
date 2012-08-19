@@ -180,8 +180,8 @@ framework with a new hard-coded (and thus inlinable) distance metric may
 be the only option.  That, or wrapping a templated C++ implementation.
 
 All of the above scripts are available as an ipython
-notebook: [memview_bench_2.ipynb](/scripts/memview_bench_2.ipynb).
+notebook: [memview_bench_2.ipynb](/downloads/notebooks/memview_bench_2.ipynb).
 For information on how to view this file, see the
 [IPython page](http://ipython.org/ipython-doc/dev/interactive/htmlnotebook.html)
 Alternatively, you can view this notebook (but not modify it) using the
-nbviewer [here](http://nbviewer.ipython.org/url/jakevdp.github.com/scripts/memview_bench_2.ipynb).
+nbviewer [here](http://nbviewer.ipython.org/url/jakevdp.github.com/downloads/notebooks/memview_bench_2.ipynb).
