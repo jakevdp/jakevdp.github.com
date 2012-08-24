@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-08-24T12:11:21-07:00</updated>
+  <updated>2012-08-24T13:06:05-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -245,9 +245,9 @@ There are likely ways to tweak the numba version to make it even faster,
 as indicated in the comments of
 <a href="http://jakevdp.github.com/blog/2012/08/08/memoryview-benchmarks/">this post</a>.</p>
 
-<p>All in all, I should say I&#8217;m very impressed.  By adding just a <em>single line</em>
-to the original python code,
-I was able to attain speeds competetive with a highly-optimized (and
+<p>All in all, I should say I&#8217;m very impressed.  Using numba, I added
+just a <em>single line</em> to the original python code, and
+was able to attain speeds competetive with a highly-optimized (and
 significantly less &#8220;pythonic&#8221;)  cython implementation.  Based on this,
 I&#8217;m extremely excited to see what numba brings in the future.</p>
 
@@ -465,7 +465,7 @@ I&#8217;ve been playing around with.</p>
 is an animation of a double pendulum.  This example operates by precomputing
 the pendulum position over 10 seconds, and then animating the results.  I
 saw this and wondered if python would be fast enough to compute the dynamics
-on the fly: it turns out it is:</p>
+on the fly.  It turns out it is:</p>
 
 <figure class='code'><figcaption><span>Double Pendulum (double_pendulum.py)</span> <a href='http://jakevdp.github.com/downloads/code/double_pendulum.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -1114,12 +1114,13 @@ of the box and fall under the influence of a constant gravitational force:</p>
 result is pretty mesmerizing.  I coded this up during a flight, and ended
 up just sitting and watching it for about ten minutes.</p>
 
+<p><video width='360' height='270' preload='none' controls poster=' /downloads/videos/particle_box_frame.png'><source src='http://jakevdp.github.com/downloads/videos/particle_box.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+
 <p>This is just the beginning: it might be an interesting exercise to add
 other elements, like computation of the temperature and pressure to demonstrate
 the ideal gas law, or real-time plotting of the velocity distribution to
 watch it approach the expected Maxwellian distribution.  It opens up many
-possibilities for virtual physics demos&#8230;
-<video width='360' height='270' preload='none' controls poster=' /downloads/videos/particle_box_frame.png'><source src='http://jakevdp.github.com/downloads/videos/particle_box.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+possibilities for virtual physics demos&#8230;</p>
 
 <h3>Summing it up</h3>
 
