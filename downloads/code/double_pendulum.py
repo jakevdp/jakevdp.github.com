@@ -1,9 +1,17 @@
-# Author: Jake Vanderplas
-#
-# based on example code at http://matplotlib.sourceforge.net/examples/animation/double_pendulum_animated.py
-#
-# Double pendulum formula translated from the C code at
-# http://www.physics.usyd.edu.au/~wheat/dpend_html/solve_dpend.c
+"""
+General Numerical Solver for the 1D Time-Dependent Schrodinger's equation.
+
+adapted from code at http://matplotlib.sourceforge.net/examples/animation/double_pendulum_animated.py
+
+Double pendulum formula translated from the C code at
+http://www.physics.usyd.edu.au/~wheat/dpend_html/solve_dpend.c
+
+author: Jake Vanderplas
+email: vanderplas@astro.washington.edu
+website: http://jakevdp.github.com
+license: BSD
+Please feel free to use and modify this, but keep the above information. Thanks!
+"""
 
 from numpy import sin, cos
 import numpy as np

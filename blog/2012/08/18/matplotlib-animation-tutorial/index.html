@@ -187,7 +187,27 @@ across the screen:</p>
 <span class='line-number'>31</span>
 <span class='line-number'>32</span>
 <span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">Matplotlib Animation Example</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">author: Jake Vanderplas</span>
+</span><span class='line'><span class="sd">email: vanderplas@astro.washington.edu</span>
+</span><span class='line'><span class="sd">website: http://jakevdp.github.com</span>
+</span><span class='line'><span class="sd">license: BSD</span>
+</span><span class='line'><span class="sd">Please feel free to use and modify this, but keep the above information. Thanks!</span>
+</span><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 </span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 </span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
 </span><span class='line'>
@@ -452,12 +472,28 @@ on the fly: it turns out it is:</p>
 <span class='line-number'>139</span>
 <span class='line-number'>140</span>
 <span class='line-number'>141</span>
-</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="c"># Author: Jake Vanderplas</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># based on example code at http://matplotlib.sourceforge.net/examples/animation/double_pendulum_animated.py</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># Double pendulum formula translated from the C code at</span>
-</span><span class='line'><span class="c"># http://www.physics.usyd.edu.au/~wheat/dpend_html/solve_dpend.c</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">General Numerical Solver for the 1D Time-Dependent Schrodinger&#39;s equation.</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">adapted from code at http://matplotlib.sourceforge.net/examples/animation/double_pendulum_animated.py</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">Double pendulum formula translated from the C code at</span>
+</span><span class='line'><span class="sd">http://www.physics.usyd.edu.au/~wheat/dpend_html/solve_dpend.c</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">author: Jake Vanderplas</span>
+</span><span class='line'><span class="sd">email: vanderplas@astro.washington.edu</span>
+</span><span class='line'><span class="sd">website: http://jakevdp.github.com</span>
+</span><span class='line'><span class="sd">license: BSD</span>
+</span><span class='line'><span class="sd">Please feel free to use and modify this, but keep the above information. Thanks!</span>
+</span><span class='line'><span class="sd">&quot;&quot;&quot;</span>
 </span><span class='line'>
 </span><span class='line'><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span>
 </span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -766,7 +802,25 @@ of the box and fall under the influence of a constant gravitational force:</p>
 <span class='line-number'>148</span>
 <span class='line-number'>149</span>
 <span class='line-number'>150</span>
-</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">Animation of Elastic collisions with Gravity</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">author: Jake Vanderplas</span>
+</span><span class='line'><span class="sd">email: vanderplas@astro.washington.edu</span>
+</span><span class='line'><span class="sd">website: http://jakevdp.github.com</span>
+</span><span class='line'><span class="sd">license: BSD</span>
+</span><span class='line'><span class="sd">Please feel free to use and modify this, but keep the above information. Thanks!</span>
+</span><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 </span><span class='line'><span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">pdist</span><span class="p">,</span> <span class="n">squareform</span>
 </span><span class='line'>
 </span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
@@ -978,6 +1032,8 @@ with?</p>
         <a class="basic-alignment left" href="/blog/2012/08/16/memoryview-benchmarks-2/" title="Previous Post: Memoryview Benchmarks 2">&laquo; Memoryview Benchmarks 2</a>
       
       
+        <a class="basic-alignment right" href="/blog/2012/08/24/numba-vs-cython/" title="Next Post: Numba vs Cython">Numba vs Cython &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -995,6 +1051,10 @@ with?</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/08/24/numba-vs-cython/">Numba vs Cython</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/08/18/matplotlib-animation-tutorial/">Matplotlib Animation Tutorial</a>
