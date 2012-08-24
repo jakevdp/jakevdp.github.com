@@ -1,8 +1,11 @@
 """
 General Numerical Solver for the 1D Time-Dependent Schrodinger's equation.
- Written by Jake VanderPlas, December 2009
-  email: vanderplas@astro.washington.edu
-  website: http://jakevdp.github.com
+
+author: Jake Vanderplas
+email: vanderplas@astro.washington.edu
+website: http://jakevdp.github.com
+license: BSD
+Please feel free to use and modify this, but keep the above information. Thanks!
 """
 
 import numpy as np
@@ -187,37 +190,41 @@ def square_barrier(x, width, height):
 
 ######################################################################
 # Create the animation
+
+# specify time steps and duration
 dt = 0.01
 N_steps = 50
 t_max = 120
 frames = int(t_max / float(N_steps * dt))
 
+# specify constants
+hbar = 1.0   # planck's constant
+m = 1.9      # particle mass
+
+# specify range in x coordinate
 N = 2 ** 11
+dx = 0.1
+x = dx * (np.arange(N) - 0.5 * N)
+
+# specify potential
 V0 = 1.5
-hbar = 1.0
-m = 1.9
-
-xlim = (-100, 100)
-klim = (-5, 5)
-
 L = hbar / np.sqrt(2 * m * V0)
 a = 3 * L
 x0 = -60 * L
+V_x = square_barrier(x, a, V0)
+V_x[x < -98] = 1E6
+V_x[x > 98] = 1E6
 
+# specify initial momentum and quantities derived from it
 p0 = np.sqrt(2 * m * 0.2 * V0)
 dp2 = p0 * p0 * 1./80
 d = hbar / np.sqrt(2 * dp2)
 
 k0 = p0 / hbar
 v0 = p0 / m
-
-dx = 0.1
-x = dx * (np.arange(N) - 0.5 * N)
-V_x = square_barrier(x, a, V0)
-V_x[x < -98] = 1E6
-V_x[x > 98] = 1E6
 psi_x0 = gauss_x(x, d, x0, k0)
 
+# define the Schrodinger object which performs the calculations
 S = Schrodinger(x=x,
                 psi_x0=psi_x0,
                 V_x=V_x,
@@ -225,19 +232,15 @@ S = Schrodinger(x=x,
                 m=m,
                 k0=-28)
 
-print "   xmin =", S.x[0]
-print "   xmax =", S.x[-1]
-print "   dx   =", S.x[1] - S.x[0]
-print "   kmin =", S.k[0]
-print "   kmax =", S.k[-1]
-print "   dk   =", S.k[1] - S.k[0]
-
 ######################################################################
 # Set up plot
-
 fig = pl.figure()
 
-# plot one axis with the x-space data
+# plotting limits
+xlim = (-100, 100)
+klim = (-5, 5)
+
+# top axes show the x-space data
 ymin = 0
 ymax = V0
 ax1 = fig.add_subplot(211, xlim=xlim,
@@ -253,7 +256,7 @@ ax1.legend(fontsize=12)
 ax1.set_xlabel('$x$')
 ax1.set_ylabel(r'$|\psi(x)|$')
 
-# plot one axis with the k-space data
+# bottom axes show the k-space data
 ymin = abs(S.psi_k).min()
 ymax = abs(S.psi_k).max()
 ax2 = fig.add_subplot(212, xlim=klim,
@@ -297,5 +300,5 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
                                frames=frames, interval=30, blit=True)
 
 
-anim.save('schrodinger_barrier.mp4', fps=15, extra_args=['-vcodec', 'libx264'])
+#anim.save('schrodinger_barrier.mp4', fps=15, extra_args=['-vcodec', 'libx264'])
 pl.show()

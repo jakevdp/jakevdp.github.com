@@ -92,7 +92,7 @@ One of the examples provided on the matplotlib
 is an animation of a double pendulum.  This example operates by precomputing
 the pendulum position over 10 seconds, and then animating the results.  I
 saw this and wondered if python would be fast enough to compute the dynamics
-on the fly: it turns out it is:
+on the fly.  It turns out it is:
 
 {% include_code Double Pendulum double_pendulum.py %}
 
@@ -121,12 +121,13 @@ The math should be familiar to anyone with a physics background, and the
 result is pretty mesmerizing.  I coded this up during a flight, and ended
 up just sitting and watching it for about ten minutes.
 
+{% video /downloads/videos/particle_box.mp4 360 270 /downloads/videos/particle_box_frame.png %}
+
 This is just the beginning: it might be an interesting exercise to add
 other elements, like computation of the temperature and pressure to demonstrate
 the ideal gas law, or real-time plotting of the velocity distribution to
 watch it approach the expected Maxwellian distribution.  It opens up many
 possibilities for virtual physics demos...
-{% video /downloads/videos/particle_box.mp4 360 270 /downloads/videos/particle_box_frame.png %}
 
 ### Summing it up ###
 The matplotlib animation module is an excellent addition to what was already
