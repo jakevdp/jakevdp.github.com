@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-08-24T18:03:08-07:00</updated>
+  <updated>2012-08-25T08:39:54-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -30,6 +30,8 @@ which calls into question python&#8217;s ability to allow true parallel computin
 version of the core python language;
 <a href="http://code.google.com/p/numexpr/">numexpr</a> provides optimized performance
 on certain classes of operations from within python;
+<a href="http://www.scipy.org/Weave/">weave</a> allows inline inclusion of compiled
+C/C++ code;
 <a href="http://www.cython.org/">cython</a> provides extra markup that allows python
 and/or python-like code to be compiled into C for fast operations.  But
 a naysayer might point out: many of these &#8220;python&#8221; solutions in practice
