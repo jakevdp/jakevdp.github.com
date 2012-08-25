@@ -17,6 +17,8 @@ Many solutions have been proposed: [PyPy](http://pypy.org/) is a much faster
 version of the core python language; 
 [numexpr](http://code.google.com/p/numexpr/) provides optimized performance
 on certain classes of operations from within python;
+[weave](http://www.scipy.org/Weave/) allows inline inclusion of compiled
+C/C++ code;
 [cython](http://www.cython.org/) provides extra markup that allows python
 and/or python-like code to be compiled into C for fast operations.  But
 a naysayer might point out: many of these "python" solutions in practice
