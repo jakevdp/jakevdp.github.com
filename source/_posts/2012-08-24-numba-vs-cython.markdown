@@ -38,7 +38,7 @@ Nevertheless, the whole setup is a bit clunky:
 why can't I have the best of both worlds: a beautiful, scripted, dynamically
 typed language like python, with the speed of C or Fortran?
 
-In recent years, new scripted languages like [go](http://golang.org/) and
+In recent years, new languages like [go](http://golang.org/) and
 [julia](http://julialang.org/) have popped up which try to address some of
 these issues.  Julia in particular has a number of nice properties (see the
 [talk](http://www.youtube.com/watch?v=VCp1jUgVRgE) from Scipy 2012 for a

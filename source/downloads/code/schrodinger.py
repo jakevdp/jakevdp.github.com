@@ -59,11 +59,11 @@ class Schrodinger(object):
         self.dt_ = None
         self.N = len(x)
         self.dx = self.x[1] - self.x[0]
-        self.dk = 2 * np.pi /(self.N * self.dx)
+        self.dk = 2 * np.pi / (self.N * self.dx)
 
         # set momentum scale
         if k0 == None:
-            self.k0 = -0.5*self.N * self.dk
+            self.k0 = -0.5 * self.N * self.dk
         else:
             self.k0 = k0
         self.k = self.k0 + self.dk * np.arange(self.N)
@@ -121,7 +121,8 @@ class Schrodinger(object):
 
     def time_step(self, dt, Nsteps = 1):
         """
-        Perform a time-step via the time-dependent Schrodinger Equation
+        Perform a series of time-steps via the time-dependent
+        Schrodinger Equation.
 
         Parameters
         ----------
@@ -300,5 +301,9 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
                                frames=frames, interval=30, blit=True)
 
 
+# uncomment the following line to save the video in mp4 format.  This
+# requires either mencoder or ffmpeg to be installed on your system
+
 #anim.save('schrodinger_barrier.mp4', fps=15, extra_args=['-vcodec', 'libx264'])
+
 pl.show()
