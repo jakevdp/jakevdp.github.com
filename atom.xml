@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-09-06T08:41:36-07:00</updated>
+  <updated>2012-09-06T09:06:53-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -237,11 +237,15 @@ evaluation of the Schrodinger equation.</p>
 <p>We now put this all together using the following algorithm</p>
 
 <ol>
-<li><p>Choose $a$, $b$, $N$, and $k_0$ as above. Then $\Delta x = (b - a) / N$
-and $\Delta k = 2\pi / (b - a)$.  Define $x_n = a + n \Delta x$ and
-$k_m = k_0 + m \Delta k$.</p></li>
+<li><p>Choose $a$, $b$, $N$, and $k_0$ as above, sufficient to represent the
+initial state of your wave function $\psi(x)$. (<strong>Warning:</strong> this is perhaps
+the hardest part of the entire solution. If limits in $x$ or $k$ are chosen
+which do not suit your problem, then the approximations used above can
+destroy the accuracy of the calculation!)  Once these are chosen, then
+$\Delta x = (b - a) / N$ and $\Delta k = 2\pi / (b - a)$.  Define
+$x_n = a + n \Delta x$ and $k_m = k_0 + m \Delta k$.</p></li>
 <li><p>Discretize the wave-functions on this grid.  Let $\psi_n(t) = \psi(x_n, t)$,
-$V_j = V(x_j)$, and $\widetilde{\psi}_m = \widetilde{\psi}(k_m, t)$.</p></li>
+$V_n = V(x_n)$, and $\widetilde{\psi}_m = \widetilde{\psi}(k_m, t)$.</p></li>
 <li><p>To progress the system by a time-step $\Delta t$, perform the following:</p>
 
 <ol>
@@ -262,7 +266,7 @@ $\psi_n \longleftarrow \psi_n
 </ol>
 
 
-<p>Note that we have split the $x$-space step into two half-steps: this
+<p>Note that we have split the $x$-space time-step into two half-steps: this
 turns out to lead to a more stable numerical solution than performing
 the step all at once. Those familiar with numerical integration
 algorithms may recognize this as an example of the
@@ -2036,6 +2040,10 @@ possibilities for virtual physics demos&#8230;</p>
 an excellent package.  I think I&#8217;ve just scratched the surface of what&#8217;s
 possible with these tools&#8230; what cool animation ideas can you come up
 with?</p>
+
+<p>Edit: in a <a href="http://jakevdp.github.com/blog/2012/09/05/quantum-python">followup post</a>, I show how
+these tools can be used to generate an animation of a simple Quantum
+Mechanical system.</p>
 ]]></content>
   </entry>
   
