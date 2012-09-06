@@ -203,12 +203,16 @@ evaluation of the Schrodinger equation.
 
 We now put this all together using the following algorithm
 
-1. Choose $a$, $b$, $N$, and $k_0$ as above. Then $\Delta x = (b - a) / N$
-   and $\Delta k = 2\pi / (b - a)$.  Define $x_n = a + n \Delta x$ and
-   $k_m = k_0 + m \Delta k$.
+1. Choose $a$, $b$, $N$, and $k_0$ as above, sufficient to represent the
+   initial state of your wave function $\psi(x)$. (**Warning:** this is perhaps
+   the hardest part of the entire solution. If limits in $x$ or $k$ are chosen
+   which do not suit your problem, then the approximations used above can
+   destroy the accuracy of the calculation!)  Once these are chosen, then
+   $\Delta x = (b - a) / N$ and $\Delta k = 2\pi / (b - a)$.  Define
+   $x_n = a + n \Delta x$ and $k_m = k_0 + m \Delta k$.
 
 2. Discretize the wave-functions on this grid.  Let $\psi_n(t) = \psi(x_n, t)$,
-   $V_j = V(x_j)$, and $\widetilde{\psi}_m = \widetilde{\psi}(k_m, t)$.
+   $V_n = V(x_n)$, and $\widetilde{\psi}_m = \widetilde{\psi}(k_m, t)$.
 
 3. To progress the system by a time-step $\Delta t$, perform the following:
 
@@ -230,7 +234,7 @@ We now put this all together using the following algorithm
 
 4. Repeat step 3 until the desired time is reached.
 
-Note that we have split the $x$-space step into two half-steps: this
+Note that we have split the $x$-space time-step into two half-steps: this
 turns out to lead to a more stable numerical solution than performing
 the step all at once. Those familiar with numerical integration
 algorithms may recognize this as an example of the

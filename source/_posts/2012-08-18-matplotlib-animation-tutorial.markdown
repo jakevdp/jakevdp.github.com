@@ -134,3 +134,7 @@ The matplotlib animation module is an excellent addition to what was already
 an excellent package.  I think I've just scratched the surface of what's
 possible with these tools... what cool animation ideas can you come up
 with?
+
+Edit: in a [followup post](/blog/2012/09/05/quantum-python), I show how
+these tools can be used to generate an animation of a simple Quantum
+Mechanical system.
