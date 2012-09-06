@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-09-05T23:37:28-07:00</updated>
+  <updated>2012-09-06T08:41:36-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -163,7 +163,7 @@ $a$ to $b$, so that we can write</p>
 
 
 <p>This approximation ends up being equivalent to assuming that the potential
-$V(x) \to \infty$ at $x \ge a$ and $x \le b$.  We&#8217;ll now approximate this
+$V(x) \to \infty$ at $x \le a$ and $x \ge b$.  We&#8217;ll now approximate this
 integral as a Riemann sum of $N$ terms, and define $\Delta x = (b - a) / N$,
 and $x_n = a + n\Delta x$:</p>
 
