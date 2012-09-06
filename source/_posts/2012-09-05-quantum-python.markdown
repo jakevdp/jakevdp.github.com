@@ -136,7 +136,7 @@ $a$ to $b$, so that we can write
 \]</div>
 
 This approximation ends up being equivalent to assuming that the potential
-$V(x) \to \infty$ at $x \ge a$ and $x \le b$.  We'll now approximate this
+$V(x) \to \infty$ at $x \le a$ and $x \ge b$.  We'll now approximate this
 integral as a Riemann sum of $N$ terms, and define $\Delta x = (b - a) / N$,
 and $x_n = a + n\Delta x$:
 
