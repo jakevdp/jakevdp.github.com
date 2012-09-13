@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-09-13T08:14:03-07:00</updated>
+  <updated>2012-09-13T08:15:34-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -111,7 +111,7 @@ can we do better?</p>
 For a set of histogram bins or <em>blocks</em>, each of an arbitrary size,
 one can use a Bayesian
 likelihood framework to compute a <em>fitness function</em> which only depends on
-two numbers: the width of the block, and the number of points in a block.
+two numbers: the width of each block, and the number of points in each block.
 The edges between these blocks (the <em>change-points</em>) can be varied, and
 the overall block configuration with the maximum fitness is quantitatively
 the best binning.</p>
