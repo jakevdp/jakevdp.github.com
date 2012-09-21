@@ -114,15 +114,16 @@ out and unify them.  I love this recent tweet by Dave Warde-Farley:
 
 Somebody is going to do this: somebody will be the next Travis Oliphant
 and create NumTron to re-unite the community.
-Maybe Dave will be the next Travis Oliphant:
-[Theano](http://deeplearning.net/software/theano/) is pretty slick.
-But then again, [Numba](http://numba.pydata.org/)’s use of LLVM is 
+Maybe Dave will be the next Travis Oliphant: he's done some great work on
+[Theano](http://deeplearning.net/software/theano/).
+But then again, the merging of Python and LLVM in Travis'
+[Numba](http://numba.pydata.org/) project is
 [pretty exciting](/blog/2012/08/24/numba-vs-cython/):
-maybe Travis Oliphant will be the next Travis Oliphant. 
-He’s done it before, after all.  Or perhaps it will be someone
+maybe Travis Oliphant will be the next Travis Oliphant --
+he’s done it before, after all.  Or perhaps it will be someone
 we’ve never heard of, who as we speak is brewing a new idea in
-an unwatched GitHub repository... time will tell.
-But I’m confident that it will happen.
+an unwatched GitHub repository. Time will tell,
+but I’m confident that it will happen.
 
 
 
@@ -142,3 +143,7 @@ John referenced in his talk.  If you use Python regularly and have some
 time, I’d highly recommend browsing these: it’s incredible to see
 how the unwavering vision of folks throughout the years has led to what we
 have today: an unmatched open-source environment for scientific computing.*
+
+*Edit: also check out the
+[History of Python](http://python-history.blogspot.com/) blog.  Thanks to
+Fernando for the tip*
