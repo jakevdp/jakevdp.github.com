@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-09-20T23:20:57-07:00</updated>
+  <updated>2012-09-21T07:41:48-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -124,15 +124,16 @@ out and unify them.  I love this recent tweet by Dave Warde-Farley:</p>
 
 <p>Somebody is going to do this: somebody will be the next Travis Oliphant
 and create NumTron to re-unite the community.
-Maybe Dave will be the next Travis Oliphant:
-<a href="http://deeplearning.net/software/theano/">Theano</a> is pretty slick.
-But then again, <a href="http://numba.pydata.org/">Numba</a>’s use of LLVM is
+Maybe Dave will be the next Travis Oliphant: he&#8217;s done some great work on
+<a href="http://deeplearning.net/software/theano/">Theano</a>.
+But then again, the merging of Python and LLVM in Travis&#8217;
+<a href="http://numba.pydata.org/">Numba</a> project is
 <a href="http://jakevdp.github.com/blog/2012/08/24/numba-vs-cython/">pretty exciting</a>:
-maybe Travis Oliphant will be the next Travis Oliphant.
-He’s done it before, after all.  Or perhaps it will be someone
+maybe Travis Oliphant will be the next Travis Oliphant &#8211;
+he’s done it before, after all.  Or perhaps it will be someone
 we’ve never heard of, who as we speak is brewing a new idea in
-an unwatched GitHub repository&#8230; time will tell.
-But I’m confident that it will happen.</p>
+an unwatched GitHub repository. Time will tell,
+but I’m confident that it will happen.</p>
 
 <h2>Conclusion</h2>
 
@@ -151,6 +152,10 @@ John referenced in his talk.  If you use Python regularly and have some
 time, I’d highly recommend browsing these: it’s incredible to see
 how the unwavering vision of folks throughout the years has led to what we
 have today: an unmatched open-source environment for scientific computing.</em></p>
+
+<p><em>Edit: also check out the
+<a href="http://python-history.blogspot.com/">History of Python</a> blog.  Thanks to
+Fernando for the tip</em></p>
 ]]></content>
   </entry>
   
