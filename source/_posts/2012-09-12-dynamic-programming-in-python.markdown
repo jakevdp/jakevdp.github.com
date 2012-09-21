@@ -62,7 +62,7 @@ pl.hist(x, bins=100, normed=True)
 {% img /figures/bayesblocks2.png [More Detailed Histogram of our Distribution] %}
 
 This is better.  But having to choose the bin width each time we plot a
-distribution is not only tiresome, but may lead to missing some important
+distribution is not only tiresome, it may lead to missing some important
 information in our data.  In a perfect world, we'd like for
 the bin width to be learned in an automated fashion, based on the
 properties of the data itself.
@@ -77,7 +77,7 @@ Scargle and collaborators showed that the answer is yes.  This is their insight:
 For a set of histogram bins or *blocks*, each of an arbitrary size,
 one can use a Bayesian
 likelihood framework to compute a *fitness function* which only depends on
-two numbers: the width of the block, and the number of points in a block.
+two numbers: the width of each block, and the number of points in each block.
 The edges between these blocks (the *change-points*) can be varied, and
 the overall block configuration with the maximum fitness is quantitatively
 the best binning.
@@ -212,11 +212,11 @@ edges of the optimal bins.  We'll visualize the result on top of the histogram
 we saw earlier:
 
 ``` python
-# plot a normal histogram in the background, with alpha transparency
+# plot a standard histogram in the background, with alpha transparency
 H1 = hist(x, bins=200, histtype='stepfilled',
           alpha=0.2, normed=True)
 # plot an adaptive-width histogram on top
-H2 = hist(x, bins=bayesian_blocks_bins(x), color='black',
+H2 = hist(x, bins=bayesian_blocks(x), color='black',
           histtype='step', normed=True)
 ```
 
