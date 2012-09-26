@@ -8,7 +8,7 @@ categories:
 A while ago I posted some information on the new matplotlib animation
 package (see my tutorial
 [here](/blog/2012/08/18/matplotlib-animation-tutorial) and
-a followup post [here](/blog/2012/09/05/quantum-python).  In them, I show
+a followup post [here](/blog/2012/09/05/quantum-python)).  In them, I show
 how easy it is to  use matplotlib to create simple animations.
 
 This morning I came across this cool optical illusion on
