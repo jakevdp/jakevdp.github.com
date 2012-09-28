@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-09-26T07:41:38-07:00</updated>
+  <updated>2012-09-28T09:22:32-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -391,7 +391,9 @@ are vital to some very cool data analysis resuts.
 This post draws heavily from a recent
 <a href="http://adsabs.harvard.edu/abs/2012arXiv1207.5578S">paper</a> by Jeff Scargle
 and collaborators (this is the Scargle of <em>Lomb-Scargle Periodogram</em>
-fame).  The paper discusses
+fame), as well as some conversations I had with Jeff at
+<a href="http://www.astro.caltech.edu/ai12/">Astroinformatics 2012</a>.
+The paper discusses
 a framework called <em>Bayesian Blocks</em>, which is essentially a method of
 creating histograms with bin sizes that adapt to the data (there&#8217;s a bit
 more to it than that: here we&#8217;ll focus on histograms for simplicity).</p>
