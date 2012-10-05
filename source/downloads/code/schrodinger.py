@@ -253,7 +253,7 @@ center_line = ax1.axvline(0, c='k', ls=':',
                           label = r"$x_0 + v_0t$")
 
 title = ax1.set_title("")
-ax1.legend(fontsize=12)
+ax1.legend(prop=dict(size=12))
 ax1.set_xlabel('$x$')
 ax1.set_ylabel(r'$|\psi(x)|$')
 
@@ -269,7 +269,7 @@ p0_line1 = ax2.axvline(-p0 / hbar, c='k', ls=':', label=r'$\pm p_0$')
 p0_line2 = ax2.axvline(p0 / hbar, c='k', ls=':')
 mV_line = ax2.axvline(np.sqrt(2 * V0) / hbar, c='k', ls='--',
                       label=r'$\sqrt{2mV_0}$')
-ax2.legend(fontsize=12)  
+ax2.legend(prop=dict(size=12))
 ax2.set_xlabel('$k$')
 ax2.set_ylabel(r'$|\psi(k)|$')
 

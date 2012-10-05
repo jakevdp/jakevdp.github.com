@@ -19,7 +19,9 @@ are vital to some very cool data analysis resuts.
 This post draws heavily from a recent
 [paper](http://adsabs.harvard.edu/abs/2012arXiv1207.5578S) by Jeff Scargle
 and collaborators (this is the Scargle of *Lomb-Scargle Periodogram*
-fame).  The paper discusses
+fame), as well as some conversations I had with Jeff at
+[Astroinformatics 2012](http://www.astro.caltech.edu/ai12/).
+The paper discusses
 a framework called *Bayesian Blocks*, which is essentially a method of
 creating histograms with bin sizes that adapt to the data (there's a bit
 more to it than that: here we'll focus on histograms for simplicity).

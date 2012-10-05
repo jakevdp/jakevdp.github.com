@@ -268,3 +268,6 @@ potential or the input wave function to see the effect on the dynamics of
 the quantum system.
 
 {% include_code Schrodinger schrodinger.py %}
+
+*Edit: I changed the legend font properties to play nicely with older
+ matplotlib versions.  Thanks to Yann for pointing it out.*
