@@ -16,9 +16,6 @@ categories:
 (you can download this script <a href="http://jakevdp.github.com/downloads/code/convert_notebook.py">here</a>):</p>
 </div>
 <!-- more -->
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This code should be run with two arguments: first the file to be converted, then the path to <code>nbconvert.py</code>.  Like the native <code>nbconvert.py</code> this produces a separate file of header code (which is inserted once into the  master blog header) and body code which can be copied verbatim into the post.</p>
-</div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In [&nbsp;]:</div>
@@ -102,6 +99,9 @@ categories:
 
 </div>
 </div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This code should be run with two arguments: first the file to be converted, then the path to <code>nbconvert.py</code>.  Like the native <code>nbconvert.py</code> this produces a separate file of header code (which is inserted once into the  master blog header) and body code which can be copied verbatim into the post.</p>
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 class="ipynb">
