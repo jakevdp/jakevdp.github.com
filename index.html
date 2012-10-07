@@ -9,7 +9,8 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="A few weeks ago, Fernando Perez, the creator of IPython, wrote a post about blogging with IPython notebooks. I decided to take a stab at making this &hellip;">
+  <meta name="description" content="XKCD plots in Matplotlib There have been some interesting discussions happening lately surrounding the creation of XKCD-style plots in
+matplotlib. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -876,6 +877,72 @@ init_mathjax();
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style Plots in Matplotlib</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-07T13:30:00-07:00" pubdate data-updated="true">Oct 7<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="ipynb">
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 class="ipynb">
+  XKCD plots in Matplotlib
+</h1>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There have been some interesting discussions happening lately surrounding the creation of XKCD-style plots in
+matplotlib.  As near as I can tell, this started with a thread on a
+<a href="http://mathematica.stackexchange.com/questions/11350/xkcd-style-graphs">mathematica list</a>
+which prompted a thread on the <a href="http://matplotlib.1069221.n5.nabble.com/XKCD-style-graphs-td39226.html">matplotlib list</a>
+wondering if the same could be done in matplotlib.</p>
+<p>Damon McDougall offered a quick
+<a href="http://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg25499.html">solution</a>
+which was improved by Fernando Perez in <a href="http://nbviewer.ipython.org/3835181/">this notebook</a>, and
+within a few days there was a <a href="https://github.com/matplotlib/matplotlib/pull/1329">matplotlib pull request</a> offering a very general
+way to create sketch-style plots in matplotlib.  Only a few days from a cool idea to a
+working implementation: this is one of the most incredible aspects of package development on github.</p>
+<p>The pull request looks really nice, but will likely not be included in a released version of
+matplotlib until version 1.3.  In the mean-time, I wanted a way to play around with
+these types of plots in a way that is compatible with the current release of matplotlib.  To do that,
+I created the following code:</p>
+</div>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -1758,6 +1825,10 @@ compute the appropriate distances.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style plots in Matplotlib</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/10/04/blogging-with-ipython/">Blogging with IPython in Octopress</a>
       </li>
     
@@ -1771,10 +1842,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2012/09/12/dynamic-programming-in-python/">Dynamic Programming in Python: Bayesian Blocks</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/05/quantum-python/">Quantum Python: Animating the Schrodinger Equation</a>
       </li>
     
   </ul>
