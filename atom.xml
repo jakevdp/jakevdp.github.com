@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-10-07T13:34:02-07:00</updated>
+  <updated>2012-10-07T15:56:17-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -42,9 +42,7 @@ matplotlib until version 1.3.  In the mean-time, I wanted a way to play around w
 these types of plots in a way that is compatible with the current release of matplotlib.  To do that,
 I created the following code:</p>
 </div>
-
 <!-- more -->
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 class="ipynb">
   The Code: XKCDify
@@ -90,7 +88,7 @@ axes labels and titles to the appropriate location.</p>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">urllib2</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&#39;Humor-Sans.ttf&#39;</span><span class="p">):</span>
-    <span class="n">fhandle</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;http://antiyawn.com/uploads/Humor-Sans.ttf&#39;</span><span class="p">)</span>
+    <span class="n">fhandle</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&#39;http://antiyawn.com/uploads/Humor-Sans.ttf&#39;</span><span class="p">)</span>
     <span class="nb">open</span><span class="p">(</span><span class="s">&#39;Humor-Sans.ttf&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fhandle</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
     
@@ -400,7 +398,7 @@ For more information, type &apos;help(pylab)&apos;.
 <div class="hbox output_area">
 <div class="prompt output_prompt">Out [3]:</div>
 <div class="output_subarea output_pyout">
-<pre class="ipynb">&lt;matplotlib.axes.AxesSubplot at 0x3282f50&gt;</pre>
+<pre class="ipynb">&lt;matplotlib.axes.AxesSubplot at 0x356bed0&gt;</pre>
 </div>
 </div>
 <div class="hbox output_area">
@@ -1749,7 +1747,7 @@ are not exactly identical, but I think it definitely gets the point across!</p>
 <div class="hbox output_area">
 <div class="prompt output_prompt">Out [5]:</div>
 <div class="output_subarea output_pyout">
-<pre class="ipynb">&lt;matplotlib.axes.AxesSubplot at 0x4563d50&gt;</pre>
+<pre class="ipynb">&lt;matplotlib.axes.AxesSubplot at 0x486ed50&gt;</pre>
 </div>
 </div>
 <div class="hbox output_area">
