@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-10-14T21:49:18-07:00</updated>
+  <updated>2012-10-15T06:24:48-07:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -632,7 +632,7 @@ and help you gain intuition into the connections between these words.</p>
 This is now a graph optimization problem, in which we hope to find the shortest
 path from one node to another along the graph.  A well-known algorithm to
 accomplish this task is Dyjkstra&#8217;s algorithm, which is based on <a href="http://jakevdp.github.com/blog/2012/09/12/dynamic-programming-in-python/">Dynamic Programming</a>
-principles.  Dijkstra&#8217;s algorithm is build into the new <code>csgraph</code> package, and can be used as
+principles.  Dijkstra&#8217;s algorithm is built into the new <code>csgraph</code> package, and can be used as
 follows.</p>
 <p>First we need to find the indices of the two words in question:</p>
 </div>
