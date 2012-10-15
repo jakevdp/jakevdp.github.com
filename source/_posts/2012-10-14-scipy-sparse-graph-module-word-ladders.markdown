@@ -915,7 +915,7 @@ words through the changing of a single letter.</p>
 <p>There's much more we could do from here.  We could use the Minimum Spanning Tree
 algorithm to do hierarchical clustering of the words.  We could create a depth-first
 or breadth-first tree.  We could repeat everything above on words of length 4 or
-length 5...  if you feel inclined, check out <code>scipy.sparse.csgraph</code> in <strong>scipy v. 0.12</strong>!</p>
+length 5...  if you feel inclined, check out <code>scipy.sparse.csgraph</code> in <strong>scipy v. 0.11</strong>!</p>
 <p>This post was written entirely in an IPython Notebook: the notebook file is available for download here:
 <a href="http://jakevdp.github.com/downloads/notebooks/sparse-graph.ipynb">sparse-graph.ipynb</a>.
 For more information on blogging with notebooks in octopress, see my
