@@ -9,7 +9,9 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="XKCD plots in Matplotlib One of the problems I&#8217;ve had with typical matplotlib figures is that everything in them is so precise, so perfect. &hellip;">
+  <meta name="description" content="The recent 0.11 release of scipy includes several new features,
+one of which is the sparse graph submodule
+which I contributed, with help from other &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -882,6 +884,76 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Sparse Graphs in Python: Playing With Word Ladders</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-14T21:23:00-07:00" pubdate data-updated="true">Oct 14<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="ipynb">
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The recent <a href="http://sourceforge.net/projects/scipy">0.11 release</a> of scipy includes several new features,
+one of which is the <a href="http://docs.scipy.org/doc/scipy/reference/sparse.csgraph.html">sparse graph submodule</a>
+which I contributed, with help from other developers.  I&#8217;m pretty excited about this: there are some
+classic algorithms implemented, and it will open up whole new realms of computational possibilities in Python.</p>
+<p>Before we start, I should say: this post is based on a <a href="http://pyvideo.org/video/1346/lightning-talks-wednesday">lightning talk</a> I gave
+at Scipy 2012, and some of the material below comes from a <a href="http://docs.scipy.org/doc/scipy/reference/tutorial/csgraph.html">tutorial</a>
+I wrote for the scipy documentation.</p>
+<p>First: what exactly is a sparse graph?  Well, a graph is just a collection of nodes, which have links between them.
+<a href="http://networkx.lanl.gov/">NetworkX</a> has some good examples and diagrams.  Graphs can represent nearly anything:
+social network connections, where each node is a person and is connected to acquaintences;
+images, where each node is a pixel and is connected to neighboring pixels; points in a high-dimensional
+distribution, where each node is connected to its nearest neighbors; and practically anything else you can
+imagine.</p>
+<p>One very efficient way to represent graph data is in a sparse matrix: let&#8217;s call it <code>G</code>.  The matrix <code>G</code> is of size <code>N x N</code>,
+and <code>G[i, j]</code> gives the value of the connection between node <code>i</code> and node <code>j</code>.  A sparse graph contains
+mostly zeros: that is, most nodes have only a few connections.  This property turns out to be true in most cases of
+interest.</p>
+<p>The creation of the sparse graph submodule was motivated by several algorithms used in scikit-learn, including:</p>
+<ul>
+<li>Isomap: a manifold learning algorithm which requires finding the shortest paths in a graph</li>
+<li>Hierarchical clustering: a clustering algorithm based on a minimum spanning tree</li>
+<li>Spectral Decomposition: a projection algorithm based on sparse graph laplacians</li>
+</ul>
+<p>And many more.</p>
+</div>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style Plots in Matplotlib</a></h1>
     
     
@@ -909,11 +981,6 @@ init_mathjax();
 
   <div class="entry-content"><div class="ipynb">
 
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 class="ipynb">
-  XKCD plots in Matplotlib
-</h1>
-</div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>One of the problems I&#8217;ve had with typical matplotlib figures is that everything in them is so precise, so perfect.  For an example of what I mean, take a look at this figure:</p>
 </div>
@@ -1908,67 +1975,9 @@ function.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/08/memoryview-benchmarks/">Memoryview Benchmarks</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-08T18:50:00-07:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/08/08/memoryview-benchmarks/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>There was recently a <a href="https://groups.google.com/forum/?fromgroups#!topic/cython-users/8uuxjB_wbBQ[1-25]" title="cython-users archive">thread</a>
-on cython-users which caught my eye.  It has to do with
-<a href="http://docs.cython.org/src/userguide/memoryviews.html">memoryviews</a>, a new
-way of working with memory buffers in cython.</p>
-
-<p>I&#8217;ve been thinking recently about how to do fast
-and flexible memory buffer access in cython.  I contributed the
-<a href="http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.BallTree.html">BallTree</a>
-implementation for nearest neighbors searching in
-<a href="http://www.scikit-learn.org">scikit-learn</a>, and have been actively thinking
-about how to make it faster and more flexible, including adding the ability
-to specify distance metrics other than euclidean and minkowski.</p>
-
-<p>In order to accomplish this, I&#8217;d like to have a set of distance metric
-functions which take two vectors and compute a distance.  There would
-be many functions with similar call signatures which could then be
-plugged into a code that would iterate over a set of vectors and
-compute the appropriate distances.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/08/08/memoryview-benchmarks/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -1979,6 +1988,10 @@ compute the appropriate distances.</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Sparse Graphs in Python: Playing with Word Ladders</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style plots in Matplotlib</a>
@@ -1994,10 +2007,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2012/09/20/why-python-is-the-last/">Why Python is the Last Language You&#8217;ll Have To Learn</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/12/dynamic-programming-in-python/">Dynamic Programming in Python: Bayesian Blocks</a>
       </li>
     
   </ul>

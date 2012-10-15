@@ -1,3 +1,59 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Pythonic Perambulations</title>
+  <meta name="author" content="Jake Vanderplas">
+
+  
+  <meta name="description" content="There was recently a thread
+on cython-users which caught my eye. It has to do with
+memoryviews, a new
+way of working with memory buffers in cython. I &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jakevdp.github.com/blog/page/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Pythonic Perambulations" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- Enable mathjax support -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+</script>
+<!--
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+jax: ["input/TeX", "output/HTML-CSS"],
+tex2jax: {
+inlineMath: [ ['$', '$'] ],
+displayMath: [ ['$$', '$$']],
+processEscapes: true,
+skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+},
+messageStyle: "none",
+"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+</script>
+-->
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
 <style type="text/css">
 /**
  * HTML5 ✰ Boilerplate
@@ -24,7 +80,8 @@ pre.ipynb {
   border: 0;
   box-shadow: none;
   margin-bottom: 0;
-  padding: 0;}
+  padding: 0;
+}
 
 h1.ipynb h2.ipynb h3.ipynb h4.ipynb h5.ipynb h6.ipynb {
 h1.ipynb h2.ipynb ... {
@@ -773,3 +830,248 @@ init_mathjax = function() {
 }
 init_mathjax();
 </script>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34061646-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Pythonic Perambulations</a></h1>
+  
+    <h2>Musings and ramblings through the world of python</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jakevdp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/08/08/memoryview-benchmarks/">Memoryview Benchmarks</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-08T18:50:00-07:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/08/memoryview-benchmarks/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>There was recently a <a href="https://groups.google.com/forum/?fromgroups#!topic/cython-users/8uuxjB_wbBQ[1-25]" title="cython-users archive">thread</a>
+on cython-users which caught my eye.  It has to do with
+<a href="http://docs.cython.org/src/userguide/memoryviews.html">memoryviews</a>, a new
+way of working with memory buffers in cython.</p>
+
+<p>I&#8217;ve been thinking recently about how to do fast
+and flexible memory buffer access in cython.  I contributed the
+<a href="http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.BallTree.html">BallTree</a>
+implementation for nearest neighbors searching in
+<a href="http://www.scikit-learn.org">scikit-learn</a>, and have been actively thinking
+about how to make it faster and more flexible, including adding the ability
+to specify distance metrics other than euclidean and minkowski.</p>
+
+<p>In order to accomplish this, I&#8217;d like to have a set of distance metric
+functions which take two vectors and compute a distance.  There would
+be many functions with similar call signatures which could then be
+plugged into a code that would iterate over a set of vectors and
+compute the appropriate distances.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/08/memoryview-benchmarks/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Sparse Graphs in Python: Playing with Word Ladders</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style plots in Matplotlib</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/10/04/blogging-with-ipython/">Blogging with IPython in Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/26/optical-illusions-in-matplotlib/">Optical Illusions in Matplotlib</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/20/why-python-is-the-last/">Why Python is the Last Language You&#8217;ll Have To Learn</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/jakevdp">@jakevdp</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jakevdp',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("jakevdp", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/jakevdp" class="twitter-follow-button" data-show-count="false">Follow @jakevdp</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Jake Vanderplas -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pythonicperambulations';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
