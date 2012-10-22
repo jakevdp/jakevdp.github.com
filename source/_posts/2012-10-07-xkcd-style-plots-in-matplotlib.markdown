@@ -7,7 +7,6 @@ categories:
 ---
 <div class="ipynb">
 
-<div class="text_cell_render border-box-sizing rendered_html">
 <p>One of the problems I've had with typical matplotlib figures is that everything in them is so precise, so perfect.  For an example of what I mean, take a look at this figure:</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">
@@ -542,6 +541,7 @@ RU5ErkJggg==
 
 </div>
 </div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
 <div class="hbox output_area">
@@ -890,7 +890,7 @@ SUVORK5CYII=
 </div>
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It just doesn't work out quite the same way.  Matplotlib is great for scientific plots, but sometimes you don't want to be so precise.</p>
+<p>It just doesn't have the same effect.  Matplotlib is great for scientific plots, but sometimes you don't want to be so precise.</p>
 <p>This subject has recently come up on the matplotlib mailing list, and started some interesting discussions.
 As near as I can tell, this started with a thread on a
 <a href="http://mathematica.stackexchange.com/questions/11350/xkcd-style-graphs">mathematica list</a>
@@ -953,7 +953,7 @@ axes labels and titles to the appropriate location.</p>
 <span class="kn">import</span> <span class="nn">urllib2</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&#39;Humor-Sans.ttf&#39;</span><span class="p">):</span>
     <span class="n">fhandle</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&#39;http://antiyawn.com/uploads/Humor-Sans.ttf&#39;</span><span class="p">)</span>
-    <span class="nb">open</span><span class="p">(</span><span class="s">&#39;Humor-Sans.ttf&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fhandle</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="nb">open</span><span class="p">(</span><span class="s">&#39;Humor-Sans.ttf&#39;</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fhandle</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
     
 <span class="k">def</span> <span class="nf">xkcd_line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
