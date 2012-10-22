@@ -906,10 +906,9 @@ init_mathjax();
 
 <div class="entry-content"><div class="ipynb">
 
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>One of the problems I&#8217;ve had with typical matplotlib figures is that everything in them is so precise, so perfect.  For an example of what I mean, take a look at this figure:</p>
 </div>
-
-
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In [1]:</div>
@@ -1427,19 +1426,11 @@ RU5ErkJggg==
 </div>
 </div>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Sometimes when showing schematic plots, this is the type of figure I want to display.  But drawing it by hand is a pain: I&#8217;d rather just use matplotlib.  The problem is, matplotlib is a bit too precise.  Attempting to duplicate this figure in matplotlib leads to something like this:</p>
 </div>
 
-
-
-
 <!-- more -->
-
-
-
 
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
@@ -1798,8 +1789,6 @@ SUVORK5CYII=
 </div>
 </div>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>It just doesn&#8217;t have the same effect.  Matplotlib is great for scientific plots, but sometimes you don&#8217;t want to be so precise.</p>
 <p>This subject has recently come up on the matplotlib mailing list, and started some interesting discussions.
@@ -1818,15 +1807,11 @@ matplotlib until at least version 1.3.  In the mean-time, I wanted a way to play
 these types of plots in a way that is compatible with the current release of matplotlib.  To do that,
 I created the following code:</p>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 class="ipynb">
   The Code: XKCDify
 </h2>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>XKCDify will take a matplotlib <code>Axes</code> instance, and modify the plot elements in-place to make
 them look hand-drawn.
@@ -1841,8 +1826,6 @@ all lines in the axis.  Additionally, we&#8217;ll switch the font of all text in
 some background lines for a nice effect where lines cross.  We&#8217;ll also draw axes, and move the
 axes labels and titles to the appropriate location.</p>
 </div>
-
-
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In [3]:</div>
@@ -2113,21 +2096,15 @@ axes labels and titles to the appropriate location.</p>
 </div>
 </div>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 class="ipynb">
   Testing it Out
 </h2>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Let&#8217;s test this out with a simple plot.  We&#8217;ll plot two curves, add some labels,
 and then call <code>XKCDify</code> on the axis.  I think the results are pretty nice!</p>
 </div>
-
-
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In [4]:</div>
@@ -2151,8 +2128,6 @@ For more information, type &apos;help(pylab)&apos;.
 </div>
 </div>
 </div>
-
-
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In [5]:</div>
@@ -2699,21 +2674,15 @@ YII=
 </div>
 </div>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 class="ipynb">
   Duplicating an XKCD Comic
 </h2>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now let&#8217;s see if we can use this to replicated an XKCD comic in matplotlib.
 This is a good one:</p>
 </div>
-
-
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In [6]:</div>
@@ -3481,14 +3450,10 @@ Q/8f50+l/lmW+7QAAAAASUVORK5CYII=
 </div>
 </div>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>With the new <code>XKCDify</code> function, this is relatively easy to replicate.  The results
 are not exactly identical, but I think it definitely gets the point across!</p>
 </div>
-
-
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In [7]:</div>
@@ -4286,8 +4251,6 @@ zSRshRBCCDeTsBVCCCHc7P8ALqdZZsQ8/nwAAAAASUVORK5CYII=
 </div>
 </div>
 </div>
-
-
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Pretty good for a couple hours&#8217;s work!</p>
 <p>I think the possibilities here are pretty limitless: this is going to be a hugely
@@ -4303,8 +4266,8 @@ For more information on blogging with notebooks in octopress, see my
 on the subject.</p>
 </div>
 
+</div>
 
-<p></div></p>
 </div>
 
 
