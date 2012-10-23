@@ -7,6 +7,7 @@ categories:
 ---
 <div class="ipynb">
 
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>One of the problems I've had with typical matplotlib figures is that everything in them is so precise, so perfect.  For an example of what I mean, take a look at this figure:</p>
 </div>
 <div class="cell border-box-sizing code_cell vbox">

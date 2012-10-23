@@ -252,6 +252,11 @@ in time to present it at [CIDU 2012](http://c3.nasa.gov/dashlink/events/1/).
 If you're interested, I'll have updates here on the blog, as well as on
 my [twitter feed](http://twitter.com/jakevdp).
 
+*Update: astroML version 0.1 has been released: see the web site
+[here](http://astroML.github.com).  It includes a full-featured Bayesian
+blocks implementation with histogram tools, which you can read about
+[here](http://astroml.github.com/user_guide/density_estimation.html#bayesian-blocks-histograms-the-right-way).*
+
 Finally, all of the above code snippets are available as an ipython
 notebook: [bayesian_blocks.ipynb](/downloads/notebooks/bayesian_blocks.ipynb).
 For information on how to view this file, see the
