@@ -9,10 +9,9 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="There was recently a thread
-on cython-users which caught my eye. It has to do with
-memoryviews, a new
-way of working with memory buffers in cython. I &hellip;">
+  <meta name="description" content="In the previous post, I explored
+how cython typed memoryviews can be used to speed up repeated array
+operations. It became clear that typed &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -885,6 +884,58 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/08/16/memoryview-benchmarks-2/">Memoryview Benchmarks 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-16T14:19:00-07:00" pubdate data-updated="true">Aug 16<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/16/memoryview-benchmarks-2/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In the <a href="/blog/2012/08/08/memoryview-benchmarks/">previous post</a>, I explored
+how cython typed memoryviews can be used to speed up repeated array
+operations.  It became clear that typed memoryviews are superior to
+the ndarray syntax for slicing, and as fast as raw pointers for single
+element access.  In the comments, Mathieu brought up an interesting
+question: is the ndarray syntax as good as typed memoryviews if you&#8217;re
+not doing slicing?</p>
+
+<p>The answer turns out to be yes, <em>unless</em> the compiler tries to inline your
+function.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/16/memoryview-benchmarks-2/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/08/08/memoryview-benchmarks/">Memoryview Benchmarks</a></h1>
     
     
@@ -955,6 +1006,10 @@ compute the appropriate distances.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Sparse Graphs in Python: Playing with Word Ladders</a>
       </li>
     
@@ -968,10 +1023,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2012/09/26/optical-illusions-in-matplotlib/">Optical Illusions in Matplotlib</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/20/why-python-is-the-last/">Why Python is the Last Language You&#8217;ll Have To Learn</a>
       </li>
     
   </ul>
@@ -1019,11 +1070,20 @@ compute the appropriate distances.</p>
   </script>
   <script src="/javascripts/twitter.js" type="text/javascript"> </script>
   
-    <a href="http://twitter.com/jakevdp" class="twitter-follow-button" data-show-count="false">Follow @jakevdp</a>
+    <a href="http://twitter.com/jakevdp" class="twitter-follow-button" data-show-count="true">Follow @jakevdp</a>
   
 </section>
 
 
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/jakevdp?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
 
 
 
@@ -1056,6 +1116,14 @@ compute the appropriate distances.</p>
 
 
 
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
 
 
 

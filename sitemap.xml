@@ -18,11 +18,11 @@
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/09/05/quantum-python/</loc>
-        <lastmod>2012-10-04T19:34:46-07:00</lastmod>
+        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/09/12/dynamic-programming-in-python/</loc>
-        <lastmod>2012-10-23T16:03:47-07:00</lastmod>
+        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/09/20/why-python-is-the-last/</loc>
@@ -34,28 +34,34 @@
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/10/04/blogging-with-ipython/</loc>
-        <lastmod>2012-10-14T20:00:16-07:00</lastmod>
+        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/10/07/xkcd-style-plots-in-matplotlib/</loc>
-        <lastmod>2012-10-22T11:14:12-07:00</lastmod>
+        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
     </url>
     <url>
         <loc>
             http://jakevdp.github.com/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/
         </loc>
-        <lastmod>2012-10-15T06:53:21-07:00</lastmod>
+        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://jakevdp.github.com/blog/2012/11/24/simple-3d-visualization-in-matplotlib/
+        </loc>
+        <lastmod>2012-11-24T11:18:34-08:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/</loc>
-        <lastmod>2012-10-23T16:03:47-07:00</lastmod>
+        <lastmod>2012-11-24T11:18:34-08:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/archives/</loc>
-        <lastmod>2012-10-23T16:03:47-07:00</lastmod>
+        <lastmod>2012-11-24T11:18:34-08:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/about/</loc>
-        <lastmod>2012-10-23T16:03:47-07:00</lastmod>
+        <lastmod>2012-11-24T11:18:34-08:00</lastmod>
     </url>
 </urlset>
