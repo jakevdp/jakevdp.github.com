@@ -5,7 +5,7 @@ try:
     nbconvert = sys.argv[1]
     notebook = sys.argv[2]
 except:
-    print "usage: python octopress_notebook.py  /path/to/nbconvert.py  /path/to/notebook_file.ipynb"
+    print "usage: python convert_notebook.py  /path/to/nbconvert.py  /path/to/notebook_file.ipynb"
     sys.exit(-1)
 
 # convert notebook
