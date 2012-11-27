@@ -9,9 +9,11 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="In the previous post, I explored
-how cython typed memoryviews can be used to speed up repeated array
-operations. It became clear that typed &hellip;">
+  <meta name="description" content="Matplotlib version 1.1 added some tools
+for creating
+animations
+which are really slick. You can find some good example animations on
+the matplotlib &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -884,6 +886,66 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/08/18/matplotlib-animation-tutorial/">Matplotlib Animation Tutorial</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-18T08:01:00-07:00" pubdate data-updated="true">Aug 18<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/18/matplotlib-animation-tutorial/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://matplotlib.sourceforge.net">Matplotlib</a> version 1.1 added some tools
+for creating
+<a href="http://matplotlib.sourceforge.net/api/animation_api.html">animations</a>
+which are really slick.  You can find some good example animations on
+the matplotlib
+<a href="http://matplotlib.sourceforge.net/examples/animation/index.html">examples</a>
+page.  I thought I&#8217;d share here some of the things I&#8217;ve learned when playing
+around with these tools.</p>
+
+<h3>Basic Animation</h3>
+
+<p>The animation tools center around the <code>matplotlib.animation.Animation</code> base
+class, which provides a framework around which the animation functionality
+is built.  The main interfaces are <code>TimedAnimation</code> and <code>FuncAnimation</code>,
+which you can read more about in the
+<a href="http://matplotlib.sourceforge.net/api/animation_api.html">documentation</a>.
+Here I&#8217;ll explore using the <code>FuncAnimation</code> tool, which I have found
+to be the most useful.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/18/matplotlib-animation-tutorial/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/08/16/memoryview-benchmarks-2/">Memoryview Benchmarks 2</a></h1>
     
     
@@ -1006,6 +1068,10 @@ compute the appropriate distances.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/">3D Interactive Rubik&#8217;s Cube in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib</a>
       </li>
     
@@ -1019,10 +1085,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2012/10/04/blogging-with-ipython/">Blogging with IPython in Octopress</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/09/26/optical-illusions-in-matplotlib/">Optical Illusions in Matplotlib</a>
       </li>
     
   </ul>
