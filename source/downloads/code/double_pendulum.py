@@ -144,6 +144,11 @@ interval = 1000 * dt - (t1 - t0)
 ani = animation.FuncAnimation(fig, animate, frames=300,
                               interval=interval, blit=True, init_func=init)
 
-ani.save('double_pendulum.mp4', fps=30, extra_args=['-vcodec', 'libx264'])
+# save the animation as an mp4.  This requires ffmpeg or mencoder to be
+# installed.  The extra_args ensure that the x264 codec is used, so that
+# the video can be embedded in html5.  You may need to adjust this for
+# your system: for more information, see
+# http://matplotlib.sourceforge.net/api/animation_api.html
+#ani.save('double_pendulum.mp4', fps=30, extra_args=['-vcodec', 'libx264'])
 
 plt.show()
