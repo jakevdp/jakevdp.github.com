@@ -9,11 +9,8 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Matplotlib version 1.1 added some tools
-for creating
-animations
-which are really slick. You can find some good example animations on
-the matplotlib &hellip;">
+  <meta name="description" content="Often I&#8217;ll tell people that I use python for computational analysis, and they
+look at me inquisitively. &#8220;Isn&#8217;t python pretty slow &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -886,6 +883,66 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/08/24/numba-vs-cython/">Numba vs Cython</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-24T10:41:00-07:00" pubdate data-updated="true">Aug 24<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/24/numba-vs-cython/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Often I&#8217;ll tell people that I use python for computational analysis, and they
+look at me inquisitively.  &#8220;Isn&#8217;t python pretty slow?&#8221;  They have a point.
+Python is an interpreted language, and as such cannot natively perform
+many operations as quickly as a compiled language such as C or Fortran.
+There is also the issue of the oft-misunderstood and much-maligned
+<a href="http://wiki.python.org/moin/GlobalInterpreterLock">GIL</a>,
+which calls into question python&#8217;s ability to allow true parallel computing.</p>
+
+<p>Many solutions have been proposed: <a href="http://pypy.org/">PyPy</a> is a much faster
+version of the core python language;
+<a href="http://code.google.com/p/numexpr/">numexpr</a> provides optimized performance
+on certain classes of operations from within python;
+<a href="http://www.scipy.org/Weave/">weave</a> allows inline inclusion of compiled
+C/C++ code;
+<a href="http://www.cython.org/">cython</a> provides extra markup that allows python
+and/or python-like code to be compiled into C for fast operations.  But
+a naysayer might point out: many of these &#8220;python&#8221; solutions in practice
+are not really python at all, but clever hacks into Fortran or C.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/24/numba-vs-cython/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/08/18/matplotlib-animation-tutorial/">Matplotlib Animation Tutorial</a></h1>
     
     
@@ -1068,6 +1125,10 @@ compute the appropriate distances.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/01/a-primer-on-python-metaclasses/">A Primer on Python Metaclasses</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/">3D Interactive Rubik&#8217;s Cube in Python</a>
       </li>
     
@@ -1081,10 +1142,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style plots in Matplotlib</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/04/blogging-with-ipython/">Blogging with IPython in Octopress</a>
       </li>
     
   </ul>

@@ -9,9 +9,8 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Over the weekend, I built a interactive 3D Rubik&#8217;s cube simulator in python
-using only matplotlib for all the graphics and
-interaction. Check &hellip;">
+  <meta name="description" content="Python, Classes, and Objects Most readers are aware that Python is an object-oriented language. By
+object-oriented, we mean that Python can define &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -878,6 +877,110 @@ init_mathjax();
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/01/a-primer-on-python-metaclasses/">A Primer on Python Metaclasses</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-01T07:25:00-08:00" pubdate data-updated="true">Dec 1<span>st</span>, 2012</time>
+        
+         | <a href="/blog/2012/12/01/a-primer-on-python-metaclasses/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="ipynb">
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 class="ipynb">
+  Python, Classes, and Objects
+</h2>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Most readers are aware that Python is an object-oriented language.  By
+object-oriented, we mean that Python can define <em>classes</em>, which bundle
+<strong>data</strong> and <strong>functionality</strong> into one entity.  For example, we may
+create a class <code>IntContainer</code> which stores an integer and allows
+certain operations to be performed:</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In [1]:</div>
+<div class="input_area box-flex1">
+<div class="highlight-ipynb"><pre class="ipynb"><span class="k">class</span> <span class="nc">IntContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_one</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="input_area box-flex1">
+<div class="highlight-ipynb"><pre class="ipynb"><span class="n">ic</span> <span class="o">=</span> <span class="n">IntContainer</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ic</span><span class="o">.</span><span class="n">add_one</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ic</span><span class="o">.</span><span class="n">i</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+<div class="vbox output_wrapper">
+<div class="output vbox">
+<div class="hbox output_area">
+<div class="prompt output_prompt"></div>
+<div class="output_subarea output_stream output_stdout">
+<pre class="ipynb">3
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a bit of a silly example, but shows the fundamental nature of
+classes: their ability to bundle data and operations into a single
+<em>object</em>, which leads to cleaner, more manageable, and more adaptable code.
+Additionally, classes can inherit properties from parents and add or
+specialize attributes and methods.  This <em>object-oriented</em>
+approach to programming can be very intuitive and powerful.</p>
+<p>What many do not realize, though, is that quite literally
+<a href="http://www.diveintopython.net/getting_to_know_python/everything_is_an_object.html"><em>everything</em></a>
+in the Python language is an object.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/12/01/a-primer-on-python-metaclasses/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -1904,66 +2007,6 @@ i\hbar\frac{\partial \psi}{\partial t}
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/24/numba-vs-cython/">Numba vs Cython</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-24T10:41:00-07:00" pubdate data-updated="true">Aug 24<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/08/24/numba-vs-cython/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Often I&#8217;ll tell people that I use python for computational analysis, and they
-look at me inquisitively.  &#8220;Isn&#8217;t python pretty slow?&#8221;  They have a point.
-Python is an interpreted language, and as such cannot natively perform
-many operations as quickly as a compiled language such as C or Fortran.
-There is also the issue of the oft-misunderstood and much-maligned
-<a href="http://wiki.python.org/moin/GlobalInterpreterLock">GIL</a>,
-which calls into question python&#8217;s ability to allow true parallel computing.</p>
-
-<p>Many solutions have been proposed: <a href="http://pypy.org/">PyPy</a> is a much faster
-version of the core python language;
-<a href="http://code.google.com/p/numexpr/">numexpr</a> provides optimized performance
-on certain classes of operations from within python;
-<a href="http://www.scipy.org/Weave/">weave</a> allows inline inclusion of compiled
-C/C++ code;
-<a href="http://www.cython.org/">cython</a> provides extra markup that allows python
-and/or python-like code to be compiled into C for fast operations.  But
-a naysayer might point out: many of these &#8220;python&#8221; solutions in practice
-are not really python at all, but clever hacks into Fortran or C.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/08/24/numba-vs-cython/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1979,6 +2022,10 @@ are not really python at all, but clever hacks into Fortran or C.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/01/a-primer-on-python-metaclasses/">A Primer on Python Metaclasses</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/">3D Interactive Rubik&#8217;s Cube in Python</a>
       </li>
     
@@ -1992,10 +2039,6 @@ are not really python at all, but clever hacks into Fortran or C.</p>
     
       <li class="post">
         <a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style plots in Matplotlib</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/04/blogging-with-ipython/">Blogging with IPython in Octopress</a>
       </li>
     
   </ul>
