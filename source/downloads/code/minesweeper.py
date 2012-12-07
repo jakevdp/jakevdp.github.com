@@ -1,7 +1,7 @@
 """
 Matplotlib Minesweeper
 ----------------------
-A simple Minesweeper game implemented in matplotlib.
+A simple Minesweeper implementation in matplotlib.
 
 Author: Jake Vanderplas <vanderplas@astro.washington.edu>, Dec. 2012
 License: BSD
