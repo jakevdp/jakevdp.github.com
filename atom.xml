@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-12-01T11:17:09-08:00</updated>
+  <updated>2012-12-06T20:56:57-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -12,6 +12,551 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Minesweeper in Matplotlib]]></title>
+    <link href="http://jakevdp.github.com/blog/2012/12/06/minesweeper-in-matplotlib/"/>
+    <updated>2012-12-06T18:23:00-08:00</updated>
+    <id>http://jakevdp.github.com/blog/2012/12/06/minesweeper-in-matplotlib</id>
+    <content type="html"><![CDATA[<p>Lately I&#8217;ve been playing around with interactivity in matplotlib.  A couple
+weeks ago, I discussed briefly how to use event callbacks to implement
+<a href="http://jakevdp.github.com/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">simple 3D visualization</a>
+and later used this as a base for creating a
+<a href="http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python">working 3D Rubik&#8217;s cube</a>
+entirely in matplotlib.</p>
+
+<p>Today I have a different goal: re-create
+<a href="http://en.wikipedia.org/wiki/Minesweeper_%28computer_game%29">minesweeper</a>,
+that ubiquitous single-player puzzle game that most of us will admit to
+having binged on at least once or twice in their lives.  In minesweeper, the
+goal is to discover and avoid hidden mines within a gridded minefield, and
+the process takes some logic and quick thinking.</p>
+
+<p><img src="http://jakevdp.github.com/images/minesweeper_2.gif" width="800"></p>
+
+<!-- more -->
+
+
+<p>To implement this in matplotlib, at its most stripped-down level, simply
+requires us to register mouse clicks on the plot window, and to have the
+window respond in the appropriate way.  The rest is just the logic underneath.</p>
+
+<h2>Event Callbacks</h2>
+
+<p>Matplotlib contains several built-in event callbacks.  You can register
+key presses (with <code>'key_press_event'</code> and <code>'key_release_event'</code>),
+mouse clicks (with <code>'button_press_event'</code> and <code>'button_release_event'</code>),
+mouse movement (with <code>'motion_notify_event'</code>), and much more.  For
+a full listing of the events that can be bound to functionality, see the
+documentation of the function <code>'matplotlib.pyplot.connect'</code>.</p>
+
+<p>As a simple example, here we&#8217;ll create a polygon and a function which is called
+each time the axis is clicked.  The function <code>on_click</code> checks if the click
+occured within the polygon, and if so changes the polygon to a random
+color:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span><span class='line'><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</span><span class='line'><span class="n">polygon</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+</span><span class='line'><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Function to be called when mouse is clicked</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">on_click</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">polygon</span><span class="o">.</span><span class="n">contains_point</span><span class="p">((</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)):</span>
+</span><span class='line'>        <span class="n">polygon</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Connect the click function to the button press event</span>
+</span><span class='line'><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s">&#39;button_press_event&#39;</span><span class="p">,</span> <span class="n">on_click</span><span class="p">)</span>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The result will look something like this:</p>
+
+<p><img src="http://jakevdp.github.com/images/poly_color.gif" width="400"></p>
+
+<p>Checking whether a click event is within a polygon or any other artist is
+a very common pattern.  For this reason, matplotlib provides a built-in
+ <code>pick</code> event.  You can think of this as an event similar to a mouse click,
+but specifically generated by a plot artist when it is clicked.
+Furthermore, a <code>pick</code> event is associated back to that particular plot
+element, which can be easily referenced within the callback.
+Here is a code snippet which gives is equivalent to the code above,
+but uses pick events rather than button press events:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span><span class='line'><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</span><span class='line'><span class="n">polygon</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+</span><span class='line'><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># set the picker to True, so that pick events are registered</span>
+</span><span class='line'><span class="n">polygon</span><span class="o">.</span><span class="n">set_picker</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># create a function to be bound to pick events: here the event has an</span>
+</span><span class='line'><span class="c"># attribute `artist` which points to the object which was clicked</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">on_pick</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">event</span><span class="o">.</span><span class="n">artist</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># bind pick events to our on_pick function</span>
+</span><span class='line'><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s">&#39;pick_event&#39;</span><span class="p">,</span> <span class="n">on_pick</span><span class="p">)</span>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we have used just a single polygon, but there&#8217;s nothing to stop us
+from using multiple interactive polygons in a single window.  Add some
+logic beneath it all, and the results can be extremely flexible.  We&#8217;ll
+go through one in-depth example below.</p>
+
+<h2>Minesweeper</h2>
+
+<p>Using this simple machinery, let&#8217;s create a basic implementation of the game
+Minesweeper.  This involves creating a grid of polygons, with a certain number
+of them &#8220;containing&#8221; mines.  Clicking the left mouse button will &#8220;uncover&#8221;
+the square, ending the game if a mine is underneath.  If (as we&#8217;d hope)
+an uncovered square does not contain a mine, it will reveal a number
+reporting how many of the eight adjacent squares contain mines.
+The right mouse button is used to mark where we believe mines are.</p>
+
+<p>There are some other more sophisticated features in the below code &#8211;
+for example, clicking
+an already uncovered square with the correct number of adjacent mines marked
+will automatically clear the surrounding squares &#8211; but rather than enumerating
+every programming decision, I&#8217;ll just show you the code.  It&#8217;s less than
+200 lines, but the results are pretty nice:</p>
+
+<p><img src="http://jakevdp.github.com/images/minesweeper.gif" width="440" height="440"></p>
+
+<figure class='code'><figcaption><span>Minesweeper (minesweeper.py)</span> <a href='http://jakevdp.github.com/downloads/code/minesweeper.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">Matplotlib Minesweeper</span>
+</span><span class='line'><span class="sd">----------------------</span>
+</span><span class='line'><span class="sd">A simple Minesweeper implementation in matplotlib.</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">Author: Jake Vanderplas &lt;vanderplas@astro.washington.edu&gt;, Dec. 2012</span>
+</span><span class='line'><span class="sd">License: BSD</span>
+</span><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">scipy.signal</span> <span class="kn">import</span> <span class="n">convolve2d</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">RegularPolygon</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">MineSweeper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">covered_color</span> <span class="o">=</span> <span class="s">&#39;#DDDDDD&#39;</span>
+</span><span class='line'>    <span class="n">uncovered_color</span> <span class="o">=</span> <span class="s">&#39;#AAAAAA&#39;</span>
+</span><span class='line'>    <span class="n">edge_color</span> <span class="o">=</span> <span class="s">&#39;#888888&#39;</span>
+</span><span class='line'>    <span class="n">count_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="s">&#39;blue&#39;</span><span class="p">,</span> <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;darkblue&#39;</span><span class="p">,</span>
+</span><span class='line'>                    <span class="s">&#39;darkred&#39;</span><span class="p">,</span> <span class="s">&#39;darkgreen&#39;</span><span class="p">,</span> <span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="s">&#39;black&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">flag_vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+</span><span class='line'>                              <span class="p">[</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@classmethod</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">beginner</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@classmethod</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">intermediate</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@classmethod</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">expert</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">nmines</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nmines</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">nmines</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># Create the figure and axes</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">((</span><span class="n">width</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">,</span> <span class="p">(</span><span class="n">height</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">))</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">((</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span>
+</span><span class='line'>                                    <span class="n">aspect</span><span class="o">=</span><span class="s">&#39;equal&#39;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+</span><span class='line'>                                    <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">width</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">),</span>
+</span><span class='line'>                                    <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">))</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">axis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullFormatter</span><span class="p">())</span>
+</span><span class='line'>            <span class="n">axis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullLocator</span><span class="p">())</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># Create the grid of squares</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">squares</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">RegularPolygon</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span>
+</span><span class='line'>                                                 <span class="n">numVertices</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+</span><span class='line'>                                                 <span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+</span><span class='line'>                                                 <span class="n">orientation</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
+</span><span class='line'>                                                 <span class="n">ec</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_color</span><span class="p">,</span>
+</span><span class='line'>                                                 <span class="n">fc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">covered_color</span><span class="p">)</span>
+</span><span class='line'>                                  <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">height</span><span class="p">)]</span>
+</span><span class='line'>                                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">width</span><span class="p">)])</span>
+</span><span class='line'>        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">sq</span><span class="p">)</span> <span class="k">for</span> <span class="n">sq</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">squares</span><span class="o">.</span><span class="n">flat</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># define internal state variables</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">mines</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">counts</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">game_over</span> <span class="o">=</span> <span class="bp">False</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># Create event hook for mouse clicks</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_connect</span><span class="p">(</span><span class="s">&#39;button_press_event&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_button_press</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_draw_mine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">Circle</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+</span><span class='line'>                                     <span class="n">ec</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_draw_red_X</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s">&#39;X&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+</span><span class='line'>                     <span class="n">ha</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_toggle_mine_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]:</span>
+</span><span class='line'>            <span class="k">pass</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">patches</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_vertices</span> <span class="o">+</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span>
+</span><span class='line'>                                            <span class="n">fc</span><span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_reveal_unmarked_mines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mines</span> <span class="o">&amp;</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">))):</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_mine</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_cross_out_wrong_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">mines</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">))):</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_red_X</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_mark_remaining_mines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mines</span> <span class="o">&amp;</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">))):</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_mine_flag</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_setup_mines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+</span><span class='line'>        <span class="c"># randomly place mines on a grid, but not on space (i, j)</span>
+</span><span class='line'>        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">j</span><span class="p">),</span>
+</span><span class='line'>                              <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>                                        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">)])</span>
+</span><span class='line'>        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">mines</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">mines</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="n">idx</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">nmines</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># count the number of mines bordering each square</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">counts</span> <span class="o">=</span> <span class="n">convolve2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mines</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">complex</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+</span><span class='line'>                                 <span class="n">mode</span><span class="o">=</span><span class="s">&#39;same&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_click_square</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+</span><span class='line'>        <span class="c"># if this is the first click, then set up the mines</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mines</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_setup_mines</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># if there is a flag or square is already clicked, do nothing</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]:</span>
+</span><span class='line'>            <span class="k">return</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># hit a mine: game over</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mines</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">game_over</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_reveal_unmarked_mines</span><span class="p">()</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_red_X</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_cross_out_wrong_flags</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># square with no surrounding mines: clear out all adjacent squares</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">squares</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uncovered_color</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)):</span>
+</span><span class='line'>                <span class="k">for</span> <span class="n">jj</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)):</span>
+</span><span class='line'>                    <span class="bp">self</span><span class="o">.</span><span class="n">_click_square</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># hit an empty square: reveal the number</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">squares</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uncovered_color</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]),</span>
+</span><span class='line'>                         <span class="n">color</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">count_colors</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]],</span>
+</span><span class='line'>                         <span class="n">ha</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s">&#39;center&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+</span><span class='line'>                         <span class="n">fontweight</span><span class="o">=</span><span class="s">&#39;bold&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># if all remaining squares are mines, mark them and end game</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mines</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="p">(</span><span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">():</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">game_over</span> <span class="o">=</span> <span class="bp">True</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_mark_remaining_mines</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_button_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_over</span> <span class="ow">or</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">xdata</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">ydata</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">return</span>
+</span><span class='line'>        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">xdata</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">ydata</span><span class="p">))</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="ow">or</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
+</span><span class='line'>            <span class="k">return</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># left mouse button: reveal square.  If the square is already clicked</span>
+</span><span class='line'>        <span class="c"># and the correct # of mines are marked, then clear surroundig squares</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]):</span>
+</span><span class='line'>                <span class="n">flag_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>                                        <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span class='line'>                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">counts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="n">flag_count</span><span class="p">:</span>
+</span><span class='line'>                    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+</span><span class='line'>                                                <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)),</span>
+</span><span class='line'>                                          <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+</span><span class='line'>                                                <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))):</span>
+</span><span class='line'>                        <span class="bp">self</span><span class="o">.</span><span class="n">_click_square</span><span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>                <span class="bp">self</span><span class="o">.</span><span class="n">_click_square</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># right mouse button: mark/unmark flag</span>
+</span><span class='line'>        <span class="k">elif</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]):</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">_toggle_mine_flag</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">ms</span> <span class="o">=</span> <span class="n">MineSweeper</span><span class="o">.</span><span class="n">intermediate</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are still some things missing from this which are present in any good
+minesweeper implementation: a timer, the ability to reset the game without
+restarting the program, the ability to keep track of fastest times, and
+likely some more things I haven&#8217;t thought of.</p>
+
+<p>Regardless, this little script shows how incredibly powerful a framework
+matplotlib is.
+It can create an interactive Rubik&#8217;s cube one day, publication-quality plots
+the next, and round out the season with a blast back to a classic Windows 3.1
+time-sink.  And for some reason, I find I have much more fun playing the
+minesweeper I built from scratch than the one that came with my system.</p>
+
+<p>Enjoy!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A Primer on Python Metaclasses]]></title>

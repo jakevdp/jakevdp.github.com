@@ -9,8 +9,10 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Often I&#8217;ll tell people that I use python for computational analysis, and they
-look at me inquisitively. &#8220;Isn&#8217;t python pretty slow &hellip;">
+  <meta name="description" content="In a previous post
+I explored the new animation capabilities of the latest
+matplotlib release.
+It got me wondering whether it would be possible to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -883,6 +885,69 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/09/05/quantum-python/">Quantum Python: Animating the Schrodinger Equation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-09-05T20:12:00-07:00" pubdate data-updated="true">Sep 5<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/09/05/quantum-python/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In a <a href="/blog/2012/08/18/matplotlib-animation-tutorial/">previous post</a>
+I explored the new animation capabilities of the latest
+<a href="http://matplotlib.sourceforge.net">matplotlib</a> release.
+It got me wondering whether it would be possible to simulate more complicated
+physical systems in real time in python.  Quantum Mechanics was the first
+thing that came to mind.  It turns out that by mixing a bit of Physics
+knowledge with a bit of computing knowledge, it&#8217;s quite straightforward
+to simulate and animate a simple quantum mechanical system with python.</p>
+
+<h2>The Schrodinger Equation</h2>
+
+<p>The dynamics of a one-dimensional quantum system are governed by the
+time-dependent Schrodinger equation:</p>
+
+<div markdown="0">\[
+i\hbar\frac{\partial \psi}{\partial t}
+  = \frac{-\hbar^2}{2m} \frac{\partial^2 \psi}{\partial x^2} + V \psi
+\]</div>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/09/05/quantum-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/08/24/numba-vs-cython/">Numba vs Cython</a></h1>
     
     
@@ -1125,6 +1190,10 @@ compute the appropriate distances.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/06/minesweeper-in-matplotlib/">Minesweeper in Matplotlib</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/01/a-primer-on-python-metaclasses/">A Primer on Python Metaclasses</a>
       </li>
     
@@ -1138,10 +1207,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Sparse Graphs in Python: Playing with Word Ladders</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/07/xkcd-style-plots-in-matplotlib/">XKCD-style plots in Matplotlib</a>
       </li>
     
   </ul>
