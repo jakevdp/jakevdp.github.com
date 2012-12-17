@@ -538,7 +538,7 @@ ways to do this without delving into metaclasses, but such a simple example will
 <div class="prompt input_prompt">In [18]:</div>
 <div class="input_area box-flex1">
 <div class="highlight-ipynb"><pre class="ipynb"><span class="k">class</span> <span class="nc">InterfaceMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="p">(),</span> <span class="n">dct</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parents</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
         <span class="c"># create a class_id if it&#39;s not specified</span>
         <span class="k">if</span> <span class="s">&#39;class_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">:</span>
             <span class="n">dct</span><span class="p">[</span><span class="s">&#39;class_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
