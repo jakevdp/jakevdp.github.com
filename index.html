@@ -9,8 +9,8 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Lately I&#8217;ve been playing around with interactivity in matplotlib. A couple
-weeks ago, I discussed briefly how to use event callbacks to &hellip;">
+  <meta name="description" content="After Fabian&#8217;s post on the topic, I have recently returned to thinking about the
+subject of sparse singular value decompositions (SVDs) in &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -877,6 +877,63 @@ init_mathjax();
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/19/sparse-svds-in-python/">Sparse SVDs in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-19T08:21:00-08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/12/19/sparse-svds-in-python/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>After <a href="http://fseoane.net/blog/2012/singular-value-decomposition-in-scipy/">Fabian&#8217;s post</a> on the topic, I have recently returned to thinking about the
+subject of sparse singular value decompositions (SVDs) in Python.</p>
+
+<p>For those who haven&#8217;t used it, the SVD is an extremely powerful technique.
+It is the core routine of many applications,
+from filtering to dimensionality
+reduction to graph analysis to supervised classification and much, much more.</p>
+
+<p>I first came across the need for a fast sparse SVD when applying a technique
+called Locally Linear Embedding (LLE) to astronomy spectra: it was the first
+astronomy paper I published, and you can read it <a href="http://adsabs.harvard.edu/abs/2009AJ....138.1365V">here</a>.  In LLE, one visualizes the nonlinear relationship
+between high-dimensional observations.  The computational cost is extreme: for
+<em>N</em> objects, one must comput the null space (intimately related to the SVD)
+of a <em>N</em> by <em>N</em> matrix.  Using direct methods (e.g. LAPACK), this can scale
+as bad as * O(N<sup>3)</sup> * in both memory and speed!</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/12/19/sparse-svds-in-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -1938,69 +1995,6 @@ world, Python is here to stay.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/12/dynamic-programming-in-python/">Dynamic Programming in Python: Bayesian Blocks</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-12T19:02:00-07:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/09/12/dynamic-programming-in-python/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Of all the programming styles I have learned,
-<a href="http://en.wikipedia.org/wiki/Dynamic_programming">dynamic programming</a>
-is perhaps the most beautiful.  It can take problems that, at first glance,
-look ugly and intractable, and solve the problem with clean, concise code.
-Where a simplistic algorithm might accomplish something by brute force,
-dynamic programming steps back, breaks the task into a smaller set of
-sequential parts, and then proceeds in the most efficient way possible.</p>
-
-<h3>Bayesian Blocks</h3>
-
-<p>I&#8217;ll go through an example here where the ideas of dynamic programming
-are vital to some very cool data analysis resuts.
-This post draws heavily from a recent
-<a href="http://adsabs.harvard.edu/abs/2012arXiv1207.5578S">paper</a> by Jeff Scargle
-and collaborators (this is the Scargle of <em>Lomb-Scargle Periodogram</em>
-fame), as well as some conversations I had with Jeff at
-<a href="http://www.astro.caltech.edu/ai12/">Astroinformatics 2012</a>.
-The paper discusses
-a framework called <em>Bayesian Blocks</em>, which is essentially a method of
-creating histograms with bin sizes that adapt to the data (there&#8217;s a bit
-more to it than that: here we&#8217;ll focus on histograms for simplicity).</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/09/12/dynamic-programming-in-python/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2016,6 +2010,10 @@ more to it than that: here we&#8217;ll focus on histograms for simplicity).</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2012/12/19/sparse-svds-in-python/">Sparse SVDs in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/12/06/minesweeper-in-matplotlib/">Minesweeper in Matplotlib</a>
       </li>
     
@@ -2029,10 +2027,6 @@ more to it than that: here we&#8217;ll focus on histograms for simplicity).</p>
     
       <li class="post">
         <a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Sparse Graphs in Python: Playing with Word Ladders</a>
       </li>
     
   </ul>
