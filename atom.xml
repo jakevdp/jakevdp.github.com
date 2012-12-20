@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2012-12-19T09:44:54-08:00</updated>
+  <updated>2012-12-20T12:10:37-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -30,9 +30,9 @@ reduction to graph analysis to supervised classification and much, much more.</p
 called Locally Linear Embedding (LLE) to astronomy spectra: it was the first
 astronomy paper I published, and you can read it <a href="http://adsabs.harvard.edu/abs/2009AJ....138.1365V">here</a>.  In LLE, one visualizes the nonlinear relationship
 between high-dimensional observations.  The computational cost is extreme: for
-<em>N</em> objects, one must comput the null space (intimately related to the SVD)
+<em>N</em> objects, one must compute the null space (intimately related to the SVD)
 of a <em>N</em> by <em>N</em> matrix.  Using direct methods (e.g. LAPACK), this can scale
-as bad as * O(N<sup>3)</sup> * in both memory and speed!</p>
+as bad as <em>O[N<sup>3</sup> ]</em> in both memory and speed!</p>
 
 <!-- more -->
 
@@ -55,7 +55,8 @@ I was involved with over the years, including my
 on Astronomical applications of Karhunen-Loeve analysis &#8211; a method, again,
 intimately linked with the SVD.</p>
 
-<p>Hopefully I&#8217;ve convinced you of the power of the SVD.  Now to the code.</p>
+<p>Hopefully this brief tour has convinced you of the power of the SVD in
+addressing real research problems.  Now to the code.</p>
 
 <h1>Sparse SVD Implementations</h1>
 
