@@ -17,9 +17,9 @@ I first came across the need for a fast sparse SVD when applying a technique
 called Locally Linear Embedding (LLE) to astronomy spectra: it was the first
 astronomy paper I published, and you can read it [here](http://adsabs.harvard.edu/abs/2009AJ....138.1365V).  In LLE, one visualizes the nonlinear relationship
 between high-dimensional observations.  The computational cost is extreme: for
-*N* objects, one must comput the null space (intimately related to the SVD)
+*N* objects, one must compute the null space (intimately related to the SVD)
 of a *N* by *N* matrix.  Using direct methods (e.g. LAPACK), this can scale
-as bad as * O(N^3) * in both memory and speed!
+as bad as *O[N^3 ]* in both memory and speed!
 
 <!-- more -->
 
@@ -41,7 +41,8 @@ I was involved with over the years, including my
 on Astronomical applications of Karhunen-Loeve analysis -- a method, again,
 intimately linked with the SVD.
 
-Hopefully I've convinced you of the power of the SVD.  Now to the code.
+Hopefully this brief tour has convinced you of the power of the SVD in
+addressing real research problems.  Now to the code.
 
 # Sparse SVD Implementations #
 What I didn't know at the time I worked on the ARPACK wrapper is that there
