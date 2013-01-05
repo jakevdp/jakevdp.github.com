@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2013-01-03T22:10:02-08:00</updated>
+  <updated>2013-01-05T13:36:32-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -115,7 +115,7 @@ code-base, they can adopt Py3k virtually at-will.  I witnessed
 a similar transition take place
 over the course of my graduate schooling at University of Washington: at the
 beginning of my PhD program, nearly everybody in the department was
-using the proprietary language <a href="www.exelisvis.com/idl/">IDL</a>.
+using the proprietary language <a href="http://www.exelisvis.com/idl/">IDL</a>.
 By the time I graduated,
 close to half the department was primarily using Python.</p>
 
