@@ -99,7 +99,7 @@ code-base, they can adopt Py3k virtually at-will.  I witnessed
 a similar transition take place
 over the course of my graduate schooling at University of Washington: at the
 beginning of my PhD program, nearly everybody in the department was
-using the proprietary language [IDL](www.exelisvis.com/idl/).
+using the proprietary language [IDL](http://www.exelisvis.com/idl/).
 By the time I graduated,
 close to half the department was primarily using Python.
 
