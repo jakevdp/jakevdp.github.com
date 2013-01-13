@@ -1,0 +1,1729 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Hacking Super Mario Bros. with Python - Pythonic Perambulations</title>
+  <meta name="author" content="Jake Vanderplas">
+
+  
+  <meta name="description" content="This weekend I was coming home from the meeting of the
+LSST Dark Energy Science Collaboration,
+and found myself with a few extra hours in the airport &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Pythonic Perambulations" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+<!-- Enable mathjax support -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+</script>
+<!--
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+jax: ["input/TeX", "output/HTML-CSS"],
+tex2jax: {
+inlineMath: [ ['$', '$'] ],
+displayMath: [ ['$$', '$$']],
+processEscapes: true,
+skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+},
+messageStyle: "none",
+"HTML-CSS": { preferredFont: "TeX", availableFonts: ["STIX","TeX"] }
+</script>
+-->
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style type="text/css">
+/**
+ * HTML5 ✰ Boilerplate
+ *
+ * style.css contains a reset, font normalization and some base styles.
+ *
+ * Credit is left where credit is due.
+ * Much inspiration was taken from these projects:
+ * - yui.yahooapis.com/2.8.1/build/base/base.css
+ * - camendesign.com/design/
+ * - praegnanz.de/weblog/htmlcssjs-kickstart
+ */
+
+
+/**
+ * html5doctor.com Reset Stylesheet (Eric Meyer's Reset Reloaded + HTML5 baseline)
+ * v1.6.1 2010-09-17 | Authors: Eric Meyer & Richard Clark
+ * html5doctor.com/html-5-reset-stylesheet/
+ */
+
+pre.ipynb {
+  color: black;
+  background: #f7f7f7;
+  border: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+h1.ipynb h2.ipynb h3.ipynb h4.ipynb h5.ipynb h6.ipynb {
+h1.ipynb h2.ipynb ... {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/*html, body,*/ div, span, object, iframe,
+/*h1, h2, h3, h4, h5, h6,*/ p, blockquote, pre,
+abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+sup { vertical-align: super; }
+sub { vertical-align: sub; }
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+blockquote, q { quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after { content: ""; content: none; }
+
+ins { background-color: #ff9; color: #000; text-decoration: none; }
+
+mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
+
+del { text-decoration: line-through; }
+
+abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+
+input, select { vertical-align: middle; }
+
+
+/**
+ * Font normalization inspired by YUI Library's fonts.css: developer.yahoo.com/yui/
+ */
+
+div.ipynb { font:13px/1.231 sans-serif; *font-size:small; } /* Hack retained to preserve specificity */
+select, input, textarea, button { font:99% sans-serif; }
+
+/* Normalize monospace sizing:
+   en.wikipedia.org/wiki/MediaWiki_talk:Common.css/Archive_11#Teletype_style_fix_for_Chrome */
+pre, code, kbd, samp { font-family: monospace, sans-serif; }
+
+em,i { font-style: italic; }
+b,strong { font-weight: bold; }
+
+</style>
+<style type="text/css">
+
+/* Flexible box model classes */
+/* Taken from Alex Russell http://infrequently.org/2009/08/css-3-progress/ */
+ 
+.hbox {
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+	-webkit-box-align: stretch;
+ 
+	display: -moz-box;
+	-moz-box-orient: horizontal;
+	-moz-box-align: stretch;
+ 
+	display: box;
+	box-orient: horizontal;
+	box-align: stretch;
+}
+ 
+.hbox > * {
+	-webkit-box-flex: 0;
+	-moz-box-flex: 0;
+	box-flex: 0;
+}
+ 
+.vbox {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-box-align: stretch;
+ 
+	display: -moz-box;
+	-moz-box-orient: vertical;
+	-moz-box-align: stretch;
+ 
+	display: box;
+	box-orient: vertical;
+	box-align: stretch;
+}
+ 
+.vbox > * {
+	-webkit-box-flex: 0;
+	-moz-box-flex: 0;
+	box-flex: 0;
+}
+  
+.reverse {
+	-webkit-box-direction: reverse;
+	-moz-box-direction: reverse;
+	box-direction: reverse;
+}
+ 
+.box-flex0 {
+	-webkit-box-flex: 0;
+	-moz-box-flex: 0;
+	box-flex: 0;
+}
+ 
+.box-flex1, .box-flex {
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	box-flex: 1;
+}
+ 
+.box-flex2 {
+	-webkit-box-flex: 2;
+	-moz-box-flex: 2;
+	box-flex: 2;
+}
+ 
+.box-group1 {
+	-webkit-box-flex-group: 1;
+	-moz-box-flex-group: 1;
+	box-flex-group: 1;
+}
+ 
+.box-group2 {
+	-webkit-box-flex-group: 2;
+	-moz-box-flex-group: 2;
+	box-flex-group: 2;
+}
+ 
+.start {
+	-webkit-box-pack: start;
+	-moz-box-pack: start;
+	box-pack: start;
+}
+ 
+.end {
+	-webkit-box-pack: end;
+	-moz-box-pack: end;
+	box-pack: end;
+}
+ 
+.center {
+	-webkit-box-pack: center;
+	-moz-box-pack: center;
+	box-pack: center;
+}
+
+</style>
+<style type="text/css">
+/**
+ * Primary styles
+ *
+ * Author: IPython Development Team
+ */
+
+
+div.ipynb {
+    overflow: hidden;
+}
+
+span#save_widget {
+    padding: 5px;
+    margin: 0px 0px 0px 300px;
+    display:inline-block;
+}
+
+span#notebook_name {
+    height: 1em;
+    line-height: 1em;
+    padding: 3px;
+    border: none;
+    font-size: 146.5%;
+}
+
+.ui-menubar-item .ui-button .ui-button-text {
+    padding: 0.4em 1.0em;
+    font-size: 100%;
+}
+
+.ui-menu {
+  -moz-box-shadow:    0px 6px 10px -1px #adadad;
+  -webkit-box-shadow: 0px 6px 10px -1px #adadad;
+  box-shadow:         0px 6px 10px -1px #adadad;
+}
+
+.ui-menu .ui-menu-item a {
+    border: 1px solid transparent;
+    padding: 2px 1.6em;
+}
+
+.ui-menu .ui-menu-item a.ui-state-focus {
+    margin: 0;
+}
+
+.ui-menu hr {
+    margin: 0.3em 0;
+}
+
+#menubar_container {
+    position: relative;
+}
+
+#notification_area {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 25px;
+    padding: 3px 0px;
+    padding-right: 3px;
+    z-index: 10;
+}
+
+.notification_widget{
+    float : right;
+    right: 0px;
+    top: 1px;
+    height: 25px;
+    padding: 3px 6px;
+    z-index: 10;
+}
+
+#toolbar {
+    padding: 3px 15px;
+}
+
+#cell_type {
+    font-size: 85%;
+}
+
+
+div#main_app {
+    width: 100%;
+    position: relative;
+}
+
+span#quick_help_area {
+    position: static;
+    padding: 5px 0px;
+    margin: 0px 0px 0px 0px;
+}
+
+.help_string {
+    float: right;
+    width: 170px;
+    padding: 0px 5px;
+    text-align: left;
+    font-size: 85%;
+}
+
+.help_string_label {
+    float: right;
+    font-size: 85%;
+}
+
+div#notebook_panel {
+    margin: 0px 0px 0px 0px;
+    padding: 0px;
+}
+
+div#notebook {
+    overflow-y: scroll;
+    overflow-x: auto;
+    width: 100%;
+    /* This spaces the cell away from the edge of the notebook area */
+    padding: 5px 5px 15px 5px;
+    margin: 0px;
+    background-color: white;
+}
+
+div#pager_splitter {
+    height: 8px;
+}
+
+#pager_container {
+    position : relative;
+}
+
+div#pager {
+    padding: 15px;
+    overflow: auto;
+    display: none;
+}
+
+div.ui-widget-content {
+    border: 1px solid #aaa;
+    outline: none;
+}
+
+.cell {
+    border: 1px solid transparent;
+}
+
+div.cell {
+    width: 100%;
+    padding: 5px 5px 5px 0px;
+    /* This acts as a spacer between cells, that is outside the border */
+    margin: 2px 0px 2px 0px;
+}
+
+div.code_cell {
+    background-color: white;
+}
+
+/* any special styling for code cells that are currently running goes here */
+div.code_cell.running {
+}
+
+div.prompt {
+    /* This needs to be wide enough for 3 digit prompt numbers: In[100]: */
+    width: 11ex;
+    /* This 0.4em is tuned to match the padding on the CodeMirror editor. */
+    padding: 0.4em;
+    margin: 0px;
+    font-family: monospace;
+    text-align:right;
+}
+
+div.input {
+    page-break-inside: avoid;
+}
+
+/* input_area and input_prompt must match in top border and margin for alignment */
+div.input_area {
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #f7f7f7;
+}
+
+div.input_prompt {
+    color: navy;
+    border-top: 1px solid transparent;
+}
+
+div.output_wrapper {
+    /* This is a spacer between the input and output of each cell */
+    margin-top: 5px;
+    margin-left: 5px;
+    /* FF needs explicit width to stretch */
+    width: 100%;
+    /* this position must be relative to enable descendents to be absolute within it */
+    position: relative;
+}
+
+/* class for the output area when it should be height-limited */
+div.output_scroll {
+  /* ideally, this would be max-height, but FF barfs all over that */
+  height: 24em;
+  /* FF needs this *and the wrapper* to specify full width, or it will shrinkwrap */
+  width: 100%;
+  
+  overflow: auto;
+  border-radius: 3px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .8);
+}
+
+/* output div while it is collapsed */
+div.output_collapsed {
+  margin-right: 5px;
+}
+
+div.out_prompt_overlay {
+  height: 100%;
+  padding: 0px;
+  position: absolute;
+  border-radius: 3px;
+}
+
+div.out_prompt_overlay:hover {
+  /* use inner shadow to get border that is computed the same on WebKit/FF */
+  box-shadow: inset 0 0 1px #000;
+  background: rgba(240, 240, 240, 0.5);
+}
+
+div.output_prompt {
+    color: darkred;
+    /* 5px right shift to account for margin in parent container */
+    margin: 0 5px 0 -5px;
+}
+
+/* This class is the outer container of all output sections. */
+div.output_area {
+    padding: 0px;
+    page-break-inside: avoid;
+}
+
+/* This class is for the output subarea inside the output_area and after
+   the prompt div. */
+div.output_subarea {
+    padding: 0.4em 0.4em 0.4em 0.4em;
+}
+
+/* The rest of the output_* classes are for special styling of the different
+   output types */
+
+/* all text output has this class: */
+div.output_text {
+    text-align: left;
+    color: black;
+    font-family: monospace;
+}
+
+/* stdout/stderr are 'text' as well as 'stream', but pyout/pyerr are *not* streams */
+div.output_stream {
+    padding-top: 0.0em;
+    padding-bottom: 0.0em;
+}
+div.output_stdout {
+}
+div.output_stderr {
+    background: #fdd; /* very light red background for stderr */
+}
+
+div.output_latex {
+    text-align: left;
+    color: black;
+}
+
+div.output_html {
+}
+
+div.output_png {
+}
+
+div.output_jpeg {
+}
+
+div.text_cell {
+    background-color: white;
+    padding: 5px 5px 5px 5px;
+}
+
+div.text_cell_input {
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #f7f7f7;
+}
+
+div.text_cell_render {
+    font-family: "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+    outline: none;
+    resize: none;
+    width:  inherit;
+    border-style: none;
+    padding: 5px;
+    color: black;
+}
+
+/* The following gets added to the <head> if it is detected that the user has a
+ * monospace font with inconsistent normal/bold/italic height.  See
+ * notebookmain.js.  Such fonts will have keywords vertically offset with
+ * respect to the rest of the text.  The user should select a better font. 
+ * See: https://github.com/ipython/ipython/issues/1503
+ *
+ * .CodeMirror span {
+ *      vertical-align: bottom;
+ * }
+ */
+
+.CodeMirror {
+    line-height: 1.231;  /* Changed from 1em to our global default */
+}
+
+.CodeMirror-scroll {
+    height: auto;     /* Changed to auto to autogrow */
+    /*  The CodeMirror docs are a bit fuzzy on if overflow-y should be hidden or visible.*/
+    /*  We have found that if it is visible, vertical scrollbars appear with font size changes.*/
+    overflow-y: hidden;
+    overflow-x: auto; /* Changed from auto to remove scrollbar */
+}
+
+/* CSS font colors for translated ANSI colors. */
+
+
+.ansiblack {color: black;}
+.ansired {color: darkred;}
+.ansigreen {color: darkgreen;}
+.ansiyellow {color: brown;}
+.ansiblue {color: darkblue;}
+.ansipurple {color: darkviolet;}
+.ansicyan {color: steelblue;}
+.ansigrey {color: grey;}
+.ansibold {font-weight: bold;}
+
+.completions {
+    position: absolute;
+    z-index: 10;
+    overflow: hidden;
+    border: 1px solid grey;
+}
+
+.completions select {
+    background: white;
+    outline: none;
+    border: none;
+    padding: 0px;
+    margin: 0px;
+    overflow: auto;
+    font-family: monospace;
+}
+
+option.context {
+  background-color: #DEF7FF;
+}
+option.introspection {
+  background-color: #EBF4EB;
+}
+
+/*fixed part of the completion*/
+.completions p b {
+    font-weight:bold;
+}
+
+.completions p {
+    background: #DDF;
+    /*outline: none;
+    padding: 0px;*/
+    border-bottom: black solid 1px;
+    padding: 1px;
+    font-family: monospace;
+}
+
+pre.dialog {
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 0.4em;
+    padding-left: 2em;
+}
+
+p.dialog {
+    padding : 0.2em;
+}
+
+.shortcut_key {
+    display: inline-block;
+    width: 15ex;
+    text-align: right;
+    font-family: monospace;
+}
+
+.shortcut_descr {
+}
+
+/* Word-wrap output correctly.  This is the CSS3 spelling, though Firefox seems
+   to not honor it correctly.  Webkit browsers (Chrome, rekonq, Safari) do.
+ */
+pre, code, kbd, samp { white-space: pre-wrap; }
+
+#fonttest {
+    font-family: monospace;
+}
+
+.js-error {
+    color: darkred;
+}
+
+</style>
+<style type="text/css">
+.rendered_html {color: black;}
+.rendered_html em {font-style: italic;}
+.rendered_html strong {font-weight: bold;}
+.rendered_html u {text-decoration: underline;}
+.rendered_html :link { text-decoration: underline }
+.rendered_html :visited { text-decoration: underline }
+.rendered_html h1 {font-size: 197%; margin: .65em 0; font-weight: bold;}
+.rendered_html h2 {font-size: 153.9%; margin: .75em 0; font-weight: bold;}
+.rendered_html h3 {font-size: 123.1%; margin: .85em 0; font-weight: bold;}
+.rendered_html h4 {font-size: 100% margin: 0.95em 0; font-weight: bold;}
+.rendered_html h5 {font-size: 85%; margin: 1.5em 0; font-weight: bold;}
+.rendered_html h6 {font-size: 77%; margin: 1.65em 0; font-weight: bold;}
+.rendered_html ul {list-style:disc; margin: 1em 2em;}
+.rendered_html ul ul {list-style:square; margin: 0em 2em;}
+.rendered_html ul ul ul {list-style:circle; margin-left: 0em 2em;}
+.rendered_html ol {list-style:upper-roman; margin: 1em 2em;}
+.rendered_html ol ol {list-style:upper-alpha; margin: 0em 2em;}
+.rendered_html ol ol ol {list-style:decimal; margin: 0em 2em;}
+.rendered_html ol ol ol ol {list-style:lower-alpha; margin: 0em 2em;}
+.rendered_html ol ol ol ol ol {list-style:lower-roman; margin: 0em 2em;}
+
+.rendered_html hr {
+    color: black;
+    background-color: black;
+}
+
+.rendered_html pre {
+    margin: 1em 2em;
+}
+
+.rendered_html blockquote {
+    margin: 1em 2em;
+}
+
+.rendered_html table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin: 1em 2em;
+}
+
+.rendered_html td {
+    border: 1px solid black;
+    text-align: left;
+    vertical-align: middle;
+    padding: 4px;
+}
+
+.rendered_html th {
+    border: 1px solid black;
+    text-align: left;
+    vertical-align: middle;
+    padding: 4px;
+    font-weight: bold;
+}
+
+.rendered_html tr {
+    border: 1px solid black;
+}    
+
+.rendered_html p + p {
+    margin-top: 1em;
+}
+
+
+</style>
+<style type="text/css">
+/* Overrides of notebook CSS for static HTML export
+
+*/
+div.ipynb {
+  overflow: visible;
+  padding: 8px;
+}
+.input_area {
+  padding: 0.4em;
+}
+
+</style>
+<meta charset="UTF-8">
+<style type="text/css">
+.highlight-ipynb .hll { background-color: #ffffcc }
+.highlight-ipynb  { background: #f8f8f8; }
+.highlight-ipynb .c { color: #408080; font-style: italic } /* Comment */
+.highlight-ipynb .err { border: 1px solid #FF0000 } /* Error */
+.highlight-ipynb .k { color: #008000; font-weight: bold } /* Keyword */
+.highlight-ipynb .o { color: #666666 } /* Operator */
+.highlight-ipynb .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.highlight-ipynb .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight-ipynb .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.highlight-ipynb .cs { color: #408080; font-style: italic } /* Comment.Special */
+.highlight-ipynb .gd { color: #A00000 } /* Generic.Deleted */
+.highlight-ipynb .ge { font-style: italic } /* Generic.Emph */
+.highlight-ipynb .gr { color: #FF0000 } /* Generic.Error */
+.highlight-ipynb .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight-ipynb .gi { color: #00A000 } /* Generic.Inserted */
+.highlight-ipynb .go { color: #808080 } /* Generic.Output */
+.highlight-ipynb .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.highlight-ipynb .gs { font-weight: bold } /* Generic.Strong */
+.highlight-ipynb .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight-ipynb .gt { color: #0040D0 } /* Generic.Traceback */
+.highlight-ipynb .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.highlight-ipynb .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.highlight-ipynb .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.highlight-ipynb .kp { color: #008000 } /* Keyword.Pseudo */
+.highlight-ipynb .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.highlight-ipynb .kt { color: #B00040 } /* Keyword.Type */
+.highlight-ipynb .m { color: #666666 } /* Literal.Number */
+.highlight-ipynb .s { color: #BA2121 } /* Literal.String */
+.highlight-ipynb .na { color: #7D9029 } /* Name.Attribute */
+.highlight-ipynb .nb { color: #008000 } /* Name.Builtin */
+.highlight-ipynb .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.highlight-ipynb .no { color: #880000 } /* Name.Constant */
+.highlight-ipynb .nd { color: #AA22FF } /* Name.Decorator */
+.highlight-ipynb .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.highlight-ipynb .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.highlight-ipynb .nf { color: #0000FF } /* Name.Function */
+.highlight-ipynb .nl { color: #A0A000 } /* Name.Label */
+.highlight-ipynb .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.highlight-ipynb .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.highlight-ipynb .nv { color: #19177C } /* Name.Variable */
+.highlight-ipynb .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.highlight-ipynb .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight-ipynb .mf { color: #666666 } /* Literal.Number.Float */
+.highlight-ipynb .mh { color: #666666 } /* Literal.Number.Hex */
+.highlight-ipynb .mi { color: #666666 } /* Literal.Number.Integer */
+.highlight-ipynb .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight-ipynb .sb { color: #BA2121 } /* Literal.String.Backtick */
+.highlight-ipynb .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight-ipynb .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.highlight-ipynb .s2 { color: #BA2121 } /* Literal.String.Double */
+.highlight-ipynb .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.highlight-ipynb .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.highlight-ipynb .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.highlight-ipynb .sx { color: #008000 } /* Literal.String.Other */
+.highlight-ipynb .sr { color: #BB6688 } /* Literal.String.Regex */
+.highlight-ipynb .s1 { color: #BA2121 } /* Literal.String.Single */
+.highlight-ipynb .ss { color: #19177C } /* Literal.String.Symbol */
+.highlight-ipynb .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight-ipynb .vc { color: #19177C } /* Name.Variable.Class */
+.highlight-ipynb .vg { color: #19177C } /* Name.Variable.Global */
+.highlight-ipynb .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight-ipynb .il { color: #666666 } /* Literal.Number.Integer.Long */
+</style>
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS_HTML" type="text/javascript">
+
+</script>
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34061646-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Pythonic Perambulations</a></h1>
+  
+    <h2>Musings and ramblings through the world of python</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jakevdp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Hacking Super Mario Bros. With Python</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-13T10:32:00-08:00" pubdate data-updated="true">Jan 13<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This weekend I was coming home from the meeting of the
+<a href="http://www.lsst.org">LSST</a> Dark Energy Science Collaboration,
+and found myself with a few extra hours in the airport.
+I started passing the time by poking around on the <a href="http://imgur.com">imgur</a>
+gallery, and saw a couple animated gifs based on
+one of my all-time favorite games, Super Mario Bros.
+It got me wondering: could I use matplotlib&#8217;s animation tools to create these
+sorts of gifs in Python?  Over a few beers at an SFO bar, I started to try
+to figure it out.  To spoil the punchline a bit, I managed to do it, and the
+result looks like this:</p>
+
+<p><img class="center" src="/images/mario.gif"></p>
+
+<p>This animation was created <em>entirely in Python and matplotlib</em>, by scraping the
+image data directly from the Super Mario Bros. ROM.  Below I&#8217;ll explain how
+I managed to do it</p>
+
+<!-- more -->
+
+
+<h2>Scraping the Pixel Data</h2>
+
+<p>Clearly, the first requirement for this pursuit
+is to get the pixel data used to construct the
+mario graphics.  My first thought was to do something sophisticated like
+<a href="http://en.wikipedia.org/wiki/Machine_learning#Sparse_Dictionary_Learning">dictionary learning</a> on a collection of screen-shots from the game
+to build up a library of thumbnails.  That would be an interesting pursuit
+in itself, but it turns out it&#8217;s much more straightforward to directly
+scrape the graphics from the source.</p>
+
+<p>It&#8217;s possible to find digital copies of most
+Nintendo Entertainment System (NES) games online.
+These are known as ROMs, and can be played using one of
+several NES emulators available for various operating systems.
+I&#8217;m not sure about the legality of these
+digital game copies, so I won&#8217;t provide a link to them here.  But the internet
+being what it is, you can search Google for some variation of &#8220;Super Mario
+ROM&#8221; and pretty easily find a copy to download.</p>
+
+<p>One interesting aspect of ROMs for the original NES is that
+they use raw byte-strings to store 2-bit (i.e. 4-color), 8x8 thumbnails from
+which all of the game&#8217;s graphics are built.
+The collection of these byte-strings
+are known as the &#8220;pattern table&#8221; for the game, and there is generally a
+separate pattern table for foreground and background images.
+In the case of NES games, there are
+256 foreground and 256 background tiles, which can be extracted directly from
+the ROMs if you know where to look (incidentally, this is one of the things
+that made the NES an &#8220;8-bit&#8221; system.  2<sup>8</sup> = 256, so eight bits are required
+to specify any single tile from the table).</p>
+
+<h2>Extracting Raw Bits from a File</h2>
+
+<p>If you&#8217;re able to obtain a copy of the ROM, the first step to getting at the
+graphics is to extract the raw bit information.
+This can be done easily in Python using <code>numpy.unpackbits</code>
+and <code>numpy.frombuffer</code> or <code>numpy.fromfile</code>.
+Additionally, the ROMs are generally stored using
+zip compression.  The uncompressed data can be extracted using Python&#8217;s
+built-in <code>zipfile</code> module.  Combining all of this, we extract the raw file
+bits using a function like the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">zipfile</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">extract_bits</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">zp</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s">&#39;mario_ROM.zip&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">raw_buffer</span> <span class="o">=</span> <span class="n">zp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">zp</span><span class="o">.</span><span class="n">filelist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>        <span class="nb">bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">raw_buffer</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="nb">bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unpackbits</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This function checks whether the file is compressed using zip, and extracts
+the raw bit information in the appropriate way.</p>
+
+<h2>Assembling the Pattern Tables</h2>
+
+<p>The thumbnails which contain the game&#8217;s graphics patterns are not at any set
+location within the file.  The location is specified within the assembly
+code that comprises the program, but for our purposes
+it&#8217;s much simpler to just visualize
+the data and find it by-eye.  To accomplish this,
+I wrote a Python script
+(download it <a href="/downloads/code/mario/view_pattern_table.py">here</a>)
+based on the above data extraction code
+which uses matplotlib to interactively display the contents of the file.
+Each thumbnail is composed from 128 bits:
+two 64-bit chunks each representing an 8x8 image with one bit per pixel.
+Stacking the two results in two bits per pixel, which are able to
+represent four colors within each thumbnail.
+The first few hundred chunks are difficult to interpret by-eye. They appear
+similar to a 2D bar code: in this case the &#8220;bar code&#8221; represents pieces of the
+assembly code which store the Super Mario Bros. program.</p>
+
+<p><img class="center" src="/images/mario_pattern_sourcecode.png" width="400"></p>
+
+<p>Scrolling down toward the end of the file, however, we can quickly recognize
+the thumbnails which make up the game&#8217;s graphics:</p>
+
+<p><img class="center" src="/images/mario_pattern_foreground.png" width="400"></p>
+
+<p>This first pattern table contains all the foreground graphics for the game.
+Looking closely, the first few thumbnails
+are clearly recognizable as pieces of Mario&#8217;s head and body.
+Going on we see pieces of various enemies in the game, as well as the iconic
+mushrooms and fire-flowers.</p>
+
+<p><img class="center" src="/images/mario_pattern_background.png" width="400"></p>
+
+<p>The second pattern table contains all the background graphics for the game.
+Along with numbers and text, this contains the pieces which make up mario&#8217;s
+world: bricks, blocks, clouds, bushes, and coins.
+Though all of the above tiles are shown in grayscale, we can add color by
+simply changing the matplotlib Colormap, as we&#8217;ll see below.</p>
+
+<h2>Combining Thumbnails and Adding Color</h2>
+
+<p>Examining the pattern tables above, we can see that big Mario is made up of
+eight pattern tiles stitched together, while small Mario is made up of four.
+With a bit of trial and error, we can create each of the full frames and
+add color to make them look more authentic.  Below are all of the frames used
+to animate Mario&#8217;s motion throughout the game:</p>
+
+<p><img class="center" src="/images/mario_graphics1.png" width="400"></p>
+
+<p>Similarly, we can use the thumbnails to construct some of the other
+familiar graphics from the game, including the goombas, koopa troopas,
+beetle baileys, mushrooms, fire flowers, and more.</p>
+
+<p><img class="center" src="/images/mario_graphics2.png" width="350"></p>
+
+<p>The Python code to extract, assemble, and plot these images can be downloaded
+<a href="/downloads/code/mario/draw_mario.py">here</a>.</p>
+
+<h2>Animating Mario</h2>
+
+<p>With all of this in place, creating an animation of Mario is relatively easy.
+Using matplotlib&#8217;s animation tools (described in a
+<a href="/blog/2012/08/18/matplotlib-animation-tutorial/">previous post</a>), all it
+takes is to decide on the content of each frame, and stitch the frames together
+using matplotlib&#8217;s animation toolkit.  Putting together big Mario with some
+scenery and a few of his friends, we can create a cleanly looping animated gif.</p>
+
+<p>The code used to generate this animation is shown below.  We use the same
+<code>NESGraphics</code> class used to draw the frames above, and stitch them together
+with a custom class that streamlines the building-up of the frames.
+By uncommenting the line near the bottom, the result will be saved as an
+animated GIF using the ImageMagick animation writer that I
+<a href="https://github.com/matplotlib/matplotlib/pull/1337">recently contributed</a>
+to matplotlib.  The ImageMatick plugin has not yet made it into a
+released matplotlib version, so using the save command below will
+require installing the development version of matplotlib, available for
+download on <a href="http://github.com/matplotlib/matplotlib">github</a>.</p>
+
+<figure class='code'><figcaption><span>&#8220;Mario Animation&#8221; (animate_mario.py)</span> <a href='/downloads/code/mario/animate_mario.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="sd">&quot;&quot;&quot;Extract and draw graphics from Mario</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">By Jake Vanderplas, 2013 &lt;http://jakevdp.github.com&gt;</span>
+</span><span class='line'><span class="sd">License: GPL.</span>
+</span><span class='line'><span class="sd">Feel free to use and distribute, but keep this attribution intact.</span>
+</span><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">zipfile</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">ListedColormap</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">NESGraphics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Class interface for stripping graphics from an NES ROM&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;mario_ROM.zip&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">2049</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">zp</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unpackbits</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">zp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">zp</span><span class="o">.</span><span class="n">filelist</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+</span><span class='line'>                                               <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unpackbits</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">generate_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;Generate an image from the pattern table.</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">        Parameters</span>
+</span><span class='line'><span class="sd">        ----------</span>
+</span><span class='line'><span class="sd">        A : array_like</span>
+</span><span class='line'><span class="sd">            an array of integers indexing the thumbnails to use.</span>
+</span><span class='line'><span class="sd">            The upper-left corner of the image is A[0, 0], and the</span>
+</span><span class='line'><span class="sd">            bottom-right corner is A[-1, -1].  A negative index indicates</span>
+</span><span class='line'><span class="sd">            that the thumbnail should be flipped horizontally.</span>
+</span><span class='line'><span class="sd">        C : array-like</span>
+</span><span class='line'><span class="sd">            The color table for A.  C should have shape A.shape + (4,).</span>
+</span><span class='line'><span class="sd">            C[i, j] gives the values associated with the four bits of A</span>
+</span><span class='line'><span class="sd">            for the output image.</span>
+</span><span class='line'><span class="sd">        transparent : array_like</span>
+</span><span class='line'><span class="sd">            if true, then zero-values in A will be masked for transparency</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">        Returns</span>
+</span><span class='line'><span class="sd">        -------</span>
+</span><span class='line'><span class="sd">        im : ndarray or masked array</span>
+</span><span class='line'><span class="sd">             the image encoded by A and C</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">C</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">C</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># broadcast C to the shape of A</span>
+</span><span class='line'>        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">8</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+</span><span class='line'>                <span class="c"># extract bits</span>
+</span><span class='line'>                <span class="n">ind</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">thumb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c"># set bit colors</span>
+</span><span class='line'>                <span class="n">thumb</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">thumb</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c"># flip image if negative</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>                    <span class="n">thumb</span> <span class="o">=</span> <span class="n">thumb</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>                <span class="n">im</span><span class="p">[</span><span class="mi">8</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">j</span><span class="p">:</span><span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">thumb</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">transparent</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">im</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">NESAnimator</span><span class="p">():</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Class for animating NES graphics&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framesize</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+</span><span class='line'>                 <span class="n">filename</span><span class="o">=</span><span class="s">&#39;mario_ROM.zip&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">2049</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">NG</span> <span class="o">=</span> <span class="n">NESGraphics</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">framesize</span> <span class="o">=</span> <span class="n">framesize</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ims</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">add_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ctable</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+</span><span class='line'>                  <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">transparent</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;add a frame to the animation.</span>
+</span><span class='line'><span class="sd">        A &amp; C are passed to NESGraphics.generate_image&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">cmap</span> <span class="o">=</span> <span class="n">ListedColormap</span><span class="p">(</span><span class="n">ctable</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NG</span><span class="o">.</span><span class="n">generate_image</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="n">transparent</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">im</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">offset</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;initialize animation&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">,</span>
+</span><span class='line'>                                           <span class="n">zorder</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">framesize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">framesize</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;animation step&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+</span><span class='line'>            <span class="n">im</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">key</span><span class="p">])]</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">colors</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_extent</span><span class="p">((</span><span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+</span><span class='line'>                                      <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+</span><span class='line'>                                      <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>                                      <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;animate the frames&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">figsize</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+</span><span class='line'>                                    <span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[])</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullFormatter</span><span class="p">())</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullFormatter</span><span class="p">())</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="bp">self</span><span class="o">.</span><span class="n">_animate</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">init_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">blit</span><span class="o">=</span><span class="n">blit</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">anim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim</span>
+</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">animate_mario</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">NA</span> <span class="o">=</span> <span class="n">NESAnimator</span><span class="p">(</span><span class="n">framesize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Set up the background frames</span>
+</span><span class='line'>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">bg_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">bg_ctable</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;#88AACC&#39;</span><span class="p">,</span> <span class="s">&#39;tan&#39;</span><span class="p">,</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span> <span class="s">&#39;black&#39;</span><span class="p">,</span>
+</span><span class='line'>                 <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;#DDAA11&#39;</span><span class="p">,</span> <span class="s">&#39;#FFCC00&#39;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># blue sky</span>
+</span><span class='line'>    <span class="n">bg</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">292</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># brown bricks on the ground</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mi">9</span> <span class="o">*</span> <span class="p">[</span><span class="mi">436</span><span class="p">,</span> <span class="mi">437</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="mi">9</span> <span class="o">*</span> <span class="p">[</span><span class="mi">438</span><span class="p">,</span> <span class="mi">439</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># little green hill </span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">305</span><span class="p">,</span> <span class="mi">306</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">304</span><span class="p">,</span> <span class="mi">308</span><span class="p">,</span> <span class="mi">294</span><span class="p">,</span> <span class="mi">307</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg_colors</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg_colors</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># brown bricks</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span> <span class="mi">325</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span> <span class="mi">327</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># gold question block</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">339</span><span class="p">,</span> <span class="mi">340</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">341</span><span class="p">,</span> <span class="mi">342</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg_colors</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># duplicate background for clean wrapping</span>
+</span><span class='line'>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">bg</span><span class="p">,</span> <span class="n">bg</span><span class="p">])</span>
+</span><span class='line'>    <span class="n">bg_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">bg_colors</span><span class="p">,</span> <span class="n">bg_colors</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># get index of yellow pixels to make them flash</span>
+</span><span class='line'>    <span class="n">i_yellow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bg_colors</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># create background frames by offsetting the image</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">36</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">bg_colors</span><span class="p">[</span><span class="n">i_yellow</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">][</span><span class="n">offset</span> <span class="o">%</span> <span class="mi">9</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;bg&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">bg_colors</span><span class="p">,</span> <span class="n">bg_ctable</span><span class="p">,</span>
+</span><span class='line'>                     <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">offset</span><span class="p">),</span>
+</span><span class='line'>                     <span class="n">transparent</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Create mario frames</span>
+</span><span class='line'>    <span class="n">mario_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;orange&#39;</span><span class="p">,</span> <span class="s">&#39;brown&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;mario&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">mario_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;mario&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">mario_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;mario&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">mario_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Create koopa-troopa frames</span>
+</span><span class='line'>    <span class="n">troopa_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;orange&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;troopa&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">252</span><span class="p">,</span> <span class="mi">160</span><span class="p">],</span> <span class="p">[</span><span class="mi">161</span><span class="p">,</span> <span class="mi">162</span><span class="p">],</span> <span class="p">[</span><span class="mi">163</span><span class="p">,</span> <span class="mi">164</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">troopa_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;troopa&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">252</span><span class="p">,</span> <span class="mi">165</span><span class="p">],</span> <span class="p">[</span><span class="mi">166</span><span class="p">,</span> <span class="mi">167</span><span class="p">],</span> <span class="p">[</span><span class="mi">168</span><span class="p">,</span> <span class="mi">169</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">troopa_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Create goomba frames</span>
+</span><span class='line'>    <span class="n">goomba_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="s">&#39;#EECCCC&#39;</span><span class="p">,</span> <span class="s">&#39;#BB3333&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;goomba&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">113</span><span class="p">],</span> <span class="p">[</span><span class="mi">114</span><span class="p">,</span> <span class="mi">115</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">goomba_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;goomba&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">113</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">115</span><span class="p">,</span> <span class="o">-</span><span class="mi">114</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">goomba_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">NA</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="mi">36</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">anim</span> <span class="o">=</span> <span class="n">animate_mario</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># saving as animated gif requires matplotlib 0.13+ and imagemagick</span>
+</span><span class='line'>    <span class="c">#anim.save(&#39;mario_animation.gif&#39;, writer=&#39;imagemagick&#39;, fps=10)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The result looks like this:</p>
+
+<p><img class="center" src="/images/mario.gif"></p>
+
+<p>Pretty good!  With a bit more work, it would
+be relatively straightforward to use the above code to do some more
+sophisticated animations: perhaps recreate a full
+level from the original Super Mario Bros, or even design your own custom
+level.  You might think about taking the extra step and trying to make Mario&#8217;s
+movements interactive.  This could be a lot of fun, but probably very difficult
+to do well within matplotlib.
+For tackling an interactive mario in Python, another framework such as
+<a href="http://docs.python.org/2/library/tkinter.html">Tkinter</a> or
+<a href="http://www.pygame.org/">pygame</a> might be a better choice.</p>
+
+<p>I hope you enjoyed this one as much as I did &#8211; happy coding!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jake Vanderplas</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-13T10:32:00-08:00" pubdate data-updated="true">Jan 13<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/" data-via="jakevdp" data-counturl="http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/03/will-scientists-ever-move-to-python-3/" title="Previous Post: Will Scientists Ever Move to Python 3?">&laquo; Will Scientists Ever Move to Python 3?</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/01/13/hacking-super-mario-bros-with-python/">Hacking Super Mario Bros. with Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/01/03/will-scientists-ever-move-to-python-3/">Will Scientists Ever Move to Python 3?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/19/sparse-svds-in-python/">Sparse SVDs in Python</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/06/minesweeper-in-matplotlib/">Minesweeper in Matplotlib</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/12/01/a-primer-on-python-metaclasses/">A Primer on Python Metaclasses</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/jakevdp">@jakevdp</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'jakevdp',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("jakevdp", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/jakevdp" class="twitter-follow-button" data-show-count="true">Follow @jakevdp</a>
+  
+</section>
+
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/jakevdp?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Jake Vanderplas -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'pythonicperambulations';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/';
+        var disqus_url = 'http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2013-01-05T13:36:32-08:00</updated>
+  <updated>2013-01-13T11:53:09-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -12,6 +12,631 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hacking Super Mario Bros. with Python]]></title>
+    <link href="http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/"/>
+    <updated>2013-01-13T10:32:00-08:00</updated>
+    <id>http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python</id>
+    <content type="html"><![CDATA[<p>This weekend I was coming home from the meeting of the
+<a href="http://www.lsst.org">LSST</a> Dark Energy Science Collaboration,
+and found myself with a few extra hours in the airport.
+I started passing the time by poking around on the <a href="http://imgur.com">imgur</a>
+gallery, and saw a couple animated gifs based on
+one of my all-time favorite games, Super Mario Bros.
+It got me wondering: could I use matplotlib&#8217;s animation tools to create these
+sorts of gifs in Python?  Over a few beers at an SFO bar, I started to try
+to figure it out.  To spoil the punchline a bit, I managed to do it, and the
+result looks like this:</p>
+
+<p><img class="center" src="http://jakevdp.github.com/images/mario.gif"></p>
+
+<p>This animation was created <em>entirely in Python and matplotlib</em>, by scraping the
+image data directly from the Super Mario Bros. ROM.  Below I&#8217;ll explain how
+I managed to do it</p>
+
+<!-- more -->
+
+
+<h2>Scraping the Pixel Data</h2>
+
+<p>Clearly, the first requirement for this pursuit
+is to get the pixel data used to construct the
+mario graphics.  My first thought was to do something sophisticated like
+<a href="http://en.wikipedia.org/wiki/Machine_learning#Sparse_Dictionary_Learning">dictionary learning</a> on a collection of screen-shots from the game
+to build up a library of thumbnails.  That would be an interesting pursuit
+in itself, but it turns out it&#8217;s much more straightforward to directly
+scrape the graphics from the source.</p>
+
+<p>It&#8217;s possible to find digital copies of most
+Nintendo Entertainment System (NES) games online.
+These are known as ROMs, and can be played using one of
+several NES emulators available for various operating systems.
+I&#8217;m not sure about the legality of these
+digital game copies, so I won&#8217;t provide a link to them here.  But the internet
+being what it is, you can search Google for some variation of &#8220;Super Mario
+ROM&#8221; and pretty easily find a copy to download.</p>
+
+<p>One interesting aspect of ROMs for the original NES is that
+they use raw byte-strings to store 2-bit (i.e. 4-color), 8x8 thumbnails from
+which all of the game&#8217;s graphics are built.
+The collection of these byte-strings
+are known as the &#8220;pattern table&#8221; for the game, and there is generally a
+separate pattern table for foreground and background images.
+In the case of NES games, there are
+256 foreground and 256 background tiles, which can be extracted directly from
+the ROMs if you know where to look (incidentally, this is one of the things
+that made the NES an &#8220;8-bit&#8221; system.  2<sup>8</sup> = 256, so eight bits are required
+to specify any single tile from the table).</p>
+
+<h2>Extracting Raw Bits from a File</h2>
+
+<p>If you&#8217;re able to obtain a copy of the ROM, the first step to getting at the
+graphics is to extract the raw bit information.
+This can be done easily in Python using <code>numpy.unpackbits</code>
+and <code>numpy.frombuffer</code> or <code>numpy.fromfile</code>.
+Additionally, the ROMs are generally stored using
+zip compression.  The uncompressed data can be extracted using Python&#8217;s
+built-in <code>zipfile</code> module.  Combining all of this, we extract the raw file
+bits using a function like the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">zipfile</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">extract_bits</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">zp</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s">&#39;mario_ROM.zip&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">raw_buffer</span> <span class="o">=</span> <span class="n">zp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">zp</span><span class="o">.</span><span class="n">filelist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>        <span class="nb">bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">raw_buffer</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="nb">bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unpackbits</span><span class="p">(</span><span class="nb">bytes</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This function checks whether the file is compressed using zip, and extracts
+the raw bit information in the appropriate way.</p>
+
+<h2>Assembling the Pattern Tables</h2>
+
+<p>The thumbnails which contain the game&#8217;s graphics patterns are not at any set
+location within the file.  The location is specified within the assembly
+code that comprises the program, but for our purposes
+it&#8217;s much simpler to just visualize
+the data and find it by-eye.  To accomplish this,
+I wrote a Python script
+(download it <a href="http://jakevdp.github.com/downloads/code/mario/view_pattern_table.py">here</a>)
+based on the above data extraction code
+which uses matplotlib to interactively display the contents of the file.
+Each thumbnail is composed from 128 bits:
+two 64-bit chunks each representing an 8x8 image with one bit per pixel.
+Stacking the two results in two bits per pixel, which are able to
+represent four colors within each thumbnail.
+The first few hundred chunks are difficult to interpret by-eye. They appear
+similar to a 2D bar code: in this case the &#8220;bar code&#8221; represents pieces of the
+assembly code which store the Super Mario Bros. program.</p>
+
+<p><img class="center" src="http://jakevdp.github.com/images/mario_pattern_sourcecode.png" width="400"></p>
+
+<p>Scrolling down toward the end of the file, however, we can quickly recognize
+the thumbnails which make up the game&#8217;s graphics:</p>
+
+<p><img class="center" src="http://jakevdp.github.com/images/mario_pattern_foreground.png" width="400"></p>
+
+<p>This first pattern table contains all the foreground graphics for the game.
+Looking closely, the first few thumbnails
+are clearly recognizable as pieces of Mario&#8217;s head and body.
+Going on we see pieces of various enemies in the game, as well as the iconic
+mushrooms and fire-flowers.</p>
+
+<p><img class="center" src="http://jakevdp.github.com/images/mario_pattern_background.png" width="400"></p>
+
+<p>The second pattern table contains all the background graphics for the game.
+Along with numbers and text, this contains the pieces which make up mario&#8217;s
+world: bricks, blocks, clouds, bushes, and coins.
+Though all of the above tiles are shown in grayscale, we can add color by
+simply changing the matplotlib Colormap, as we&#8217;ll see below.</p>
+
+<h2>Combining Thumbnails and Adding Color</h2>
+
+<p>Examining the pattern tables above, we can see that big Mario is made up of
+eight pattern tiles stitched together, while small Mario is made up of four.
+With a bit of trial and error, we can create each of the full frames and
+add color to make them look more authentic.  Below are all of the frames used
+to animate Mario&#8217;s motion throughout the game:</p>
+
+<p><img class="center" src="http://jakevdp.github.com/images/mario_graphics1.png" width="400"></p>
+
+<p>Similarly, we can use the thumbnails to construct some of the other
+familiar graphics from the game, including the goombas, koopa troopas,
+beetle baileys, mushrooms, fire flowers, and more.</p>
+
+<p><img class="center" src="http://jakevdp.github.com/images/mario_graphics2.png" width="350"></p>
+
+<p>The Python code to extract, assemble, and plot these images can be downloaded
+<a href="http://jakevdp.github.com/downloads/code/mario/draw_mario.py">here</a>.</p>
+
+<h2>Animating Mario</h2>
+
+<p>With all of this in place, creating an animation of Mario is relatively easy.
+Using matplotlib&#8217;s animation tools (described in a
+<a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/">previous post</a>), all it
+takes is to decide on the content of each frame, and stitch the frames together
+using matplotlib&#8217;s animation toolkit.  Putting together big Mario with some
+scenery and a few of his friends, we can create a cleanly looping animated gif.</p>
+
+<p>The code used to generate this animation is shown below.  We use the same
+<code>NESGraphics</code> class used to draw the frames above, and stitch them together
+with a custom class that streamlines the building-up of the frames.
+By uncommenting the line near the bottom, the result will be saved as an
+animated GIF using the ImageMagick animation writer that I
+<a href="https://github.com/matplotlib/matplotlib/pull/1337">recently contributed</a>
+to matplotlib.  The ImageMatick plugin has not yet made it into a
+released matplotlib version, so using the save command below will
+require installing the development version of matplotlib, available for
+download on <a href="http://github.com/matplotlib/matplotlib">github</a>.</p>
+
+<figure class='code'><figcaption><span>&#8220;Mario Animation&#8221; (animate_mario.py)</span> <a href='http://jakevdp.github.com/downloads/code/mario/animate_mario.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="sd">&quot;&quot;&quot;Extract and draw graphics from Mario</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">By Jake Vanderplas, 2013 &lt;http://jakevdp.github.com&gt;</span>
+</span><span class='line'><span class="sd">License: GPL.</span>
+</span><span class='line'><span class="sd">Feel free to use and distribute, but keep this attribution intact.</span>
+</span><span class='line'><span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">zipfile</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">ListedColormap</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">NESGraphics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Class interface for stripping graphics from an NES ROM&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;mario_ROM.zip&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">2049</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span><span class='line'>            <span class="n">zp</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unpackbits</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">zp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">zp</span><span class="o">.</span><span class="n">filelist</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+</span><span class='line'>                                               <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unpackbits</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">))</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">generate_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;Generate an image from the pattern table.</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">        Parameters</span>
+</span><span class='line'><span class="sd">        ----------</span>
+</span><span class='line'><span class="sd">        A : array_like</span>
+</span><span class='line'><span class="sd">            an array of integers indexing the thumbnails to use.</span>
+</span><span class='line'><span class="sd">            The upper-left corner of the image is A[0, 0], and the</span>
+</span><span class='line'><span class="sd">            bottom-right corner is A[-1, -1].  A negative index indicates</span>
+</span><span class='line'><span class="sd">            that the thumbnail should be flipped horizontally.</span>
+</span><span class='line'><span class="sd">        C : array-like</span>
+</span><span class='line'><span class="sd">            The color table for A.  C should have shape A.shape + (4,).</span>
+</span><span class='line'><span class="sd">            C[i, j] gives the values associated with the four bits of A</span>
+</span><span class='line'><span class="sd">            for the output image.</span>
+</span><span class='line'><span class="sd">        transparent : array_like</span>
+</span><span class='line'><span class="sd">            if true, then zero-values in A will be masked for transparency</span>
+</span><span class='line'>
+</span><span class='line'><span class="sd">        Returns</span>
+</span><span class='line'><span class="sd">        -------</span>
+</span><span class='line'><span class="sd">        im : ndarray or masked array</span>
+</span><span class='line'><span class="sd">             the image encoded by A and C</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">C</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">C</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c"># broadcast C to the shape of A</span>
+</span><span class='line'>        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">8</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+</span><span class='line'>                <span class="c"># extract bits</span>
+</span><span class='line'>                <span class="n">ind</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">thumb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c"># set bit colors</span>
+</span><span class='line'>                <span class="n">thumb</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">thumb</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c"># flip image if negative</span>
+</span><span class='line'>                <span class="k">if</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>                    <span class="n">thumb</span> <span class="o">=</span> <span class="n">thumb</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>                <span class="n">im</span><span class="p">[</span><span class="mi">8</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">j</span><span class="p">:</span><span class="mi">8</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">thumb</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="n">transparent</span><span class="p">:</span>
+</span><span class='line'>            <span class="n">im</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">im</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">NESAnimator</span><span class="p">():</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Class for animating NES graphics&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">framesize</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+</span><span class='line'>                 <span class="n">filename</span><span class="o">=</span><span class="s">&#39;mario_ROM.zip&#39;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">2049</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">NG</span> <span class="o">=</span> <span class="n">NESGraphics</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">figsize</span> <span class="o">=</span> <span class="n">figsize</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">framesize</span> <span class="o">=</span> <span class="n">framesize</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ims</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">add_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ctable</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+</span><span class='line'>                  <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">transparent</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;add a frame to the animation.</span>
+</span><span class='line'><span class="sd">        A &amp; C are passed to NESGraphics.generate_image&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">cmap</span> <span class="o">=</span> <span class="n">ListedColormap</span><span class="p">(</span><span class="n">ctable</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NG</span><span class="o">.</span><span class="n">generate_image</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">transparent</span><span class="o">=</span><span class="n">transparent</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">im</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">offset</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;initialize animation&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest&#39;</span><span class="p">,</span>
+</span><span class='line'>                                           <span class="n">zorder</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">framesize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">framesize</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">_animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;animation step&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+</span><span class='line'>            <span class="n">im</span><span class="p">,</span> <span class="n">cmap</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">key</span><span class="p">])]</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_clim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmap</span><span class="o">.</span><span class="n">colors</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">set_extent</span><span class="p">((</span><span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+</span><span class='line'>                                      <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+</span><span class='line'>                                      <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+</span><span class='line'>                                      <span class="n">im</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ims</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;animate the frames&quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">figsize</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+</span><span class='line'>                                    <span class="n">xticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[])</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullFormatter</span><span class="p">())</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">NullFormatter</span><span class="p">())</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="bp">self</span><span class="o">.</span><span class="n">_animate</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">init_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">frames</span><span class="o">=</span><span class="n">frames</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">blit</span><span class="o">=</span><span class="n">blit</span><span class="p">)</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">anim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim</span>
+</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">anim</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">animate_mario</span><span class="p">():</span>
+</span><span class='line'>    <span class="n">NA</span> <span class="o">=</span> <span class="n">NESAnimator</span><span class="p">(</span><span class="n">framesize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">16</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Set up the background frames</span>
+</span><span class='line'>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">bg_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">12</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">bg_ctable</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;#88AACC&#39;</span><span class="p">,</span> <span class="s">&#39;tan&#39;</span><span class="p">,</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span> <span class="s">&#39;black&#39;</span><span class="p">,</span>
+</span><span class='line'>                 <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;#DDAA11&#39;</span><span class="p">,</span> <span class="s">&#39;#FFCC00&#39;</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># blue sky</span>
+</span><span class='line'>    <span class="n">bg</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">292</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># brown bricks on the ground</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="mi">9</span> <span class="o">*</span> <span class="p">[</span><span class="mi">436</span><span class="p">,</span> <span class="mi">437</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span> <span class="o">=</span> <span class="mi">9</span> <span class="o">*</span> <span class="p">[</span><span class="mi">438</span><span class="p">,</span> <span class="mi">439</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># little green hill </span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">305</span><span class="p">,</span> <span class="mi">306</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">304</span><span class="p">,</span> <span class="mi">308</span><span class="p">,</span> <span class="mi">294</span><span class="p">,</span> <span class="mi">307</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg_colors</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg_colors</span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># brown bricks</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span> <span class="mi">325</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">:</span><span class="mi">18</span><span class="p">]</span> <span class="o">=</span> <span class="mi">327</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># gold question block</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">339</span><span class="p">,</span> <span class="mi">340</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">341</span><span class="p">,</span> <span class="mi">342</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">bg_colors</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># duplicate background for clean wrapping</span>
+</span><span class='line'>    <span class="n">bg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">bg</span><span class="p">,</span> <span class="n">bg</span><span class="p">])</span>
+</span><span class='line'>    <span class="n">bg_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">bg_colors</span><span class="p">,</span> <span class="n">bg_colors</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># get index of yellow pixels to make them flash</span>
+</span><span class='line'>    <span class="n">i_yellow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bg_colors</span> <span class="o">==</span> <span class="mi">6</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># create background frames by offsetting the image</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">36</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">bg_colors</span><span class="p">[</span><span class="n">i_yellow</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">][</span><span class="n">offset</span> <span class="o">%</span> <span class="mi">9</span><span class="p">]</span>
+</span><span class='line'>        <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;bg&#39;</span><span class="p">,</span> <span class="n">bg</span><span class="p">,</span> <span class="n">bg_colors</span><span class="p">,</span> <span class="n">bg_ctable</span><span class="p">,</span>
+</span><span class='line'>                     <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">offset</span><span class="p">),</span>
+</span><span class='line'>                     <span class="n">transparent</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Create mario frames</span>
+</span><span class='line'>    <span class="n">mario_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="s">&#39;orange&#39;</span><span class="p">,</span> <span class="s">&#39;brown&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;mario&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">mario_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;mario&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span> <span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">mario_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;mario&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span> <span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">],</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span> <span class="p">[</span><span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">mario_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Create koopa-troopa frames</span>
+</span><span class='line'>    <span class="n">troopa_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;green&#39;</span><span class="p">,</span> <span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;orange&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;troopa&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">252</span><span class="p">,</span> <span class="mi">160</span><span class="p">],</span> <span class="p">[</span><span class="mi">161</span><span class="p">,</span> <span class="mi">162</span><span class="p">],</span> <span class="p">[</span><span class="mi">163</span><span class="p">,</span> <span class="mi">164</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">troopa_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;troopa&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">252</span><span class="p">,</span> <span class="mi">165</span><span class="p">],</span> <span class="p">[</span><span class="mi">166</span><span class="p">,</span> <span class="mi">167</span><span class="p">],</span> <span class="p">[</span><span class="mi">168</span><span class="p">,</span> <span class="mi">169</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">troopa_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Create goomba frames</span>
+</span><span class='line'>    <span class="n">goomba_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;white&#39;</span><span class="p">,</span> <span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="s">&#39;#EECCCC&#39;</span><span class="p">,</span> <span class="s">&#39;#BB3333&#39;</span><span class="p">]</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;goomba&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">113</span><span class="p">],</span> <span class="p">[</span><span class="mi">114</span><span class="p">,</span> <span class="mi">115</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">goomba_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">NA</span><span class="o">.</span><span class="n">add_frame</span><span class="p">(</span><span class="s">&#39;goomba&#39;</span><span class="p">,</span> <span class="p">[[</span><span class="mi">112</span><span class="p">,</span> <span class="mi">113</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">115</span><span class="p">,</span> <span class="o">-</span><span class="mi">114</span><span class="p">]],</span>
+</span><span class='line'>                 <span class="n">ctable</span><span class="o">=</span><span class="n">goomba_colors</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">NA</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="mi">36</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">anim</span> <span class="o">=</span> <span class="n">animate_mario</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># saving as animated gif requires matplotlib 0.13+ and imagemagick</span>
+</span><span class='line'>    <span class="c">#anim.save(&#39;mario_animation.gif&#39;, writer=&#39;imagemagick&#39;, fps=10)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The result looks like this:</p>
+
+<p><img class="center" src="http://jakevdp.github.com/images/mario.gif"></p>
+
+<p>Pretty good!  With a bit more work, it would
+be relatively straightforward to use the above code to do some more
+sophisticated animations: perhaps recreate a full
+level from the original Super Mario Bros, or even design your own custom
+level.  You might think about taking the extra step and trying to make Mario&#8217;s
+movements interactive.  This could be a lot of fun, but probably very difficult
+to do well within matplotlib.
+For tackling an interactive mario in Python, another framework such as
+<a href="http://docs.python.org/2/library/tkinter.html">Tkinter</a> or
+<a href="http://www.pygame.org/">pygame</a> might be a better choice.</p>
+
+<p>I hope you enjoyed this one as much as I did &#8211; happy coding!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Will Scientists Ever Move to Python 3?]]></title>
