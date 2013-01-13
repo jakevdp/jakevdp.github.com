@@ -21,7 +21,7 @@ result looks like this:
 
 This animation was created *entirely in Python and matplotlib*, by scraping the
 image data directly from the Super Mario Bros. ROM.  Below I'll explain how
-I managed to do it
+I managed to do it.
 
 <!-- more -->
 
@@ -72,7 +72,7 @@ import numpy as np
 
 def extract_bits(filename):
     if zipfile.is_zipfile(filename):
-        zp = zipfile.ZipFile('mario_ROM.zip')
+        zp = zipfile.ZipFile(filename)
         raw_buffer = zp.read(zp.filelist[0])
         bytes = np.frombuffer(raw_buffer, dtype=np.uint8)
     else:
