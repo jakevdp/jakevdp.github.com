@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2013-01-13T11:53:09-08:00</updated>
+  <updated>2013-01-13T15:10:19-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -33,7 +33,7 @@ result looks like this:</p>
 
 <p>This animation was created <em>entirely in Python and matplotlib</em>, by scraping the
 image data directly from the Super Mario Bros. ROM.  Below I&#8217;ll explain how
-I managed to do it</p>
+I managed to do it.</p>
 
 <!-- more -->
 
@@ -96,7 +96,7 @@ bits using a function like the following:</p>
 </span><span class='line'>
 </span><span class='line'><span class="k">def</span> <span class="nf">extract_bits</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 </span><span class='line'>    <span class="k">if</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">is_zipfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">zp</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s">&#39;mario_ROM.zip&#39;</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">zp</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </span><span class='line'>        <span class="n">raw_buffer</span> <span class="o">=</span> <span class="n">zp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">zp</span><span class="o">.</span><span class="n">filelist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </span><span class='line'>        <span class="nb">bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">raw_buffer</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 </span><span class='line'>    <span class="k">else</span><span class="p">:</span>
