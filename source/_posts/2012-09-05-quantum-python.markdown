@@ -6,6 +6,11 @@ comments: true
 categories: 
 ---
 
+*Update: a reader contributed some improvements to the Python code presented
+ below.  Please see the
+[pySchrodinger](https://github.com/jakevdp/pySchrodinger) github repository
+for updated code*
+
 In a [previous post](/blog/2012/08/18/matplotlib-animation-tutorial/)
 I explored the new animation capabilities of the latest
 [matplotlib](http://matplotlib.sourceforge.net) release.
