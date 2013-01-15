@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2013-01-13T15:10:19-08:00</updated>
+  <updated>2013-01-15T07:30:02-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -9320,7 +9320,12 @@ nbviewer utility <a href="http://nbviewer.ipython.org/url/jakevdp.github.com/dow
     <link href="http://jakevdp.github.com/blog/2012/09/05/quantum-python/"/>
     <updated>2012-09-05T20:12:00-07:00</updated>
     <id>http://jakevdp.github.com/blog/2012/09/05/quantum-python</id>
-    <content type="html"><![CDATA[<p>In a <a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/">previous post</a>
+    <content type="html"><![CDATA[<p><em>Update: a reader contributed some improvements to the Python code presented
+ below.  Please see the
+<a href="https://github.com/jakevdp/pySchrodinger">pySchrodinger</a> github repository
+for updated code</em></p>
+
+<p>In a <a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/">previous post</a>
 I explored the new animation capabilities of the latest
 <a href="http://matplotlib.sourceforge.net">matplotlib</a> release.
 It got me wondering whether it would be possible to simulate more complicated
