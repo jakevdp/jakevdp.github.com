@@ -9,11 +9,7 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="A while ago I posted some information on the new matplotlib animation
-package (see my tutorial
-here and
-a followup post here). In them, I show
-how &hellip;">
+  <meta name="description" content="A few weeks ago, Fernando Perez, the creator of IPython, wrote a post about blogging with IPython notebooks. I decided to take a stab at making this &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -886,6 +882,57 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/10/04/blogging-with-ipython/">Blogging With IPython in Octopress</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-04T18:40:00-07:00" pubdate data-updated="true">Oct 4<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/10/04/blogging-with-ipython/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="ipynb">
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A few weeks ago, Fernando Perez, the creator of IPython, wrote a <a href="http://blog.fperez.org/2012/09/blogging-with-ipython-notebook.html">post</a> about blogging with IPython notebooks.  I decided to take a stab at making this work in Octopress.</p>
+<p>I started by following Fernando&#8217;s outline:  I first went to <a href="http://github.com/ipython/nbconvert">http://github.com/ipython/nbconvert</a> and obtained the current version of the notebook converter.  Running <code>nbconvert.py -f blogger-html filename.ipynb</code> produces a separate html and header file with the notebook content.  I inserted the stylesheet info into my header (in octopress, the default location is <code>source/_includes/custom/head.html</code>) and copied the html directly into my post.</p>
+<p>I immediately encountered a problem.  <code>nbconvert</code> uses global CSS classes and style markups, and some of these (notably the &#8220;hightlight&#8221; class and the <code>&lt;pre&gt;</code> tag formatting) conflict with styles defined in my octopress theme.  The result was that every post in my blog ended up looking like an ugly hybrid of octopress and an ipython notebook.  Not very nice.</p>
+<p>So I did some surgery.  Admittedly, this is a terrible hack, but the following code takes the files output by nbconvert, slices them up, and creates a specific set of CSS classes for the notebook markup, such that there&#8217;s no longer a conflict with the native octopress styles
+(you can download this script <a href="http://jakevdp.github.com/downloads/code/convert_notebook.py">here</a>):</p>
+</div>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/10/04/blogging-with-ipython/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/09/26/optical-illusions-in-matplotlib/">Optical Illusions in Matplotlib</a></h1>
     
     
@@ -1363,6 +1410,10 @@ compute the appropriate distances.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/02/02/setting-up-a-mac-for-python-development/">Setting Up a Mac for Python Development</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/01/13/hacking-super-mario-bros-with-python/">Hacking Super Mario Bros. with Python</a>
       </li>
     
@@ -1376,10 +1427,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2012/12/06/minesweeper-in-matplotlib/">Minesweeper in Matplotlib</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/01/a-primer-on-python-metaclasses/">A Primer on Python Metaclasses</a>
       </li>
     
   </ul>
