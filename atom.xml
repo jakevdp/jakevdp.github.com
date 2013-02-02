@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2013-02-02T14:07:22-08:00</updated>
+  <updated>2013-02-02T14:09:37-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -26,6 +26,9 @@ desk.  Naturally, my first instinct was to set up the system for efficient
 Python development.  In order to help others who  might find themself in a
 similar situation, I took some notes on the process, and I&#8217;ll summarize
 what I learned below.</p>
+
+<!-- more -->
+
 
 <p>First, a disclaimer: I can&#8217;t promise that these suggestions are the best or most
 effective way to proceed.  I&#8217;m by no stretch of the imagination
