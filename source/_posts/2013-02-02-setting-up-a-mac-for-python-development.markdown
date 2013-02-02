@@ -15,6 +15,8 @@ Python development.  In order to help others who  might find themself in a
 similar situation, I took some notes on the process, and I'll summarize
 what I learned below.
 
+<!-- more -->
+
 First, a disclaimer: I can't promise that these suggestions are the best or most
 effective way to proceed.  I'm by no stretch of the imagination
 a Mac expert: the last Apple product I used regularly was the trusty
