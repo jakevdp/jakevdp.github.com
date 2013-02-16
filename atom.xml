@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2013-02-16T08:25:29-08:00</updated>
+  <updated>2013-02-16T12:02:55-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Animating the Lorentz System in 3D]]></title>
+    <title type="html"><![CDATA[Animating the Lorenz System in 3D]]></title>
     <link href="http://jakevdp.github.com/blog/2013/02/16/animating-the-lorentz-system-in-3d/"/>
     <updated>2013-02-16T08:05:00-08:00</updated>
     <id>http://jakevdp.github.com/blog/2013/02/16/animating-the-lorentz-system-in-3d</id>
@@ -38,17 +38,17 @@ and though I haven&#8217;t previously seen it used in conjunction with the
 animation tools, there&#8217;s nothing fundamental that prevents it.</p>
 
 <p>At the commenter&#8217;s suggestion, I decided to try this out with a simple
-example of a chaotic system: the Lorentz equations.</p>
+example of a chaotic system: the Lorenz equations.</p>
 
 <!-- more -->
 
 
-<h2>Solving the Lorentz System</h2>
+<h2>Solving the Lorenz System</h2>
 
-<p>The <a href="http://en.wikipedia.org/wiki/Lorenz_system">Lorentz Equations</a> are a
+<p>The <a href="http://en.wikipedia.org/wiki/Lorenz_system">Lorenz Equations</a> are a
 system of three coupled, first-order, nonlinear differential equations
 which describe the trajectory of a particle through time.
-The system was originally derived by Lorentz as a model
+The system was originally derived by Lorenz as a model
 of atmospheric convection, but the deceptive simplicity
 of the equations have made them an often-used example in fields beyond
 atmospheric physics.</p>
@@ -93,7 +93,7 @@ Here&#8217;s how the problem can be set up:</p>
 </span><span class='line'>
 </span><span class='line'><span class="c"># Note: t0 is required for the odeint function, though it&#39;s not used here.</span>
 </span><span class='line'><span class="k">def</span> <span class="nf">lorentz_deriv</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">t0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">8.</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">28.0</span><span class="p">):</span>
-</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Compute the time-derivative of a Lorentz system.&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Compute the time-derivative of a Lorenz system.&quot;&quot;&quot;</span>
 </span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">rho</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">z</span><span class="p">]</span>
 </span><span class='line'>
 </span><span class='line'><span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c"># starting vector</span>
@@ -113,7 +113,7 @@ I&#8217;ve described the animation tools in-depth in a
 <a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/">previous post</a>,
 I will skip that discussion here and jump straight into the code:</p>
 
-<figure class='code'><figcaption><span>Lorentz System (lorentz_animation.py)</span> <a href='http://jakevdp.github.com/downloads/code/lorentz_animation.py'>download</a></figcaption>
+<figure class='code'><figcaption><span>Lorenz System (lorentz_animation.py)</span> <a href='http://jakevdp.github.com/downloads/code/lorentz_animation.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -286,9 +286,9 @@ I will skip that discussion here and jump straight into the code:</p>
 <p><video width='360' height='270' preload='none' controls poster=' /downloads/videos/lorentz_attractor_frame.png'><source src='http://jakevdp.github.com/downloads/videos/lorentz_attractor.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
 
 <p>Notice that there are two locations in the space that seem to draw-in all
-paths: these are the so-called &#8220;Lorentz attractors&#8221;, and have some interesting
+paths: these are the so-called &#8220;Lorenz attractors&#8221;, and have some interesting
 properties which you can read about elsewhere.  The qualitative
-characteristics of these Lorentz attractors
+characteristics of these Lorenz attractors
 vary in somewhat surprising ways as the parameters
 $(\sigma, \rho, \beta)$ are changed.  If you are so inclined, you may
 wish to download the above code and play with these values to see what
