@@ -8,15 +8,11 @@ from matplotlib import animation
 
 N_trajectories = 20
 
-def lorentz_deriv(x, t0, sigma=10., beta=8./3, rho=28.0):
-    """Compute the derivative of a Lorentz process.
-    x is a vector [x0, x1, x2]
-    t0 is a dummy argument
-    sigma, beta, rho are the Lorentz parameters
-    """
-    return [sigma * (x[1] - x[0]),
-            x[0] * (rho - x[2]) - x[1],
-            x[0] * x[1] - beta * x[2]]
+
+def lorentz_deriv((x, y, z), t0, sigma=10., beta=8./3, rho=28.0):
+    """Compute the time-derivative of a Lorentz system."""
+    return [sigma * (y - x), x * (rho - z) - y, x * y - beta * z]
+
 
 # Choose random starting points, uniformly distributed from -15 to 15
 np.random.seed(1)
@@ -24,25 +20,29 @@ x0 = -15 + 30 * np.random.random((N_trajectories, 3))
 
 # Solve for the trajectories
 t = np.linspace(0, 4, 1000)
-x = np.asarray([integrate.odeint(lorentz_deriv, x0i, t)
-                for x0i in x0])
+x_t = np.asarray([integrate.odeint(lorentz_deriv, x0i, t)
+                  for x0i in x0])
 
 # Set up figure & 3D axis for animation
 fig = plt.figure()
 ax = fig.add_axes([0, 0, 1, 1], projection='3d')
 ax.axis('off')
 
-# set up lines and points
+# choose a different color for each trajectory
 colors = plt.cm.jet(np.linspace(0, 1, N_trajectories))
+
+# set up lines and points
 lines = sum([ax.plot([], [], [], '-', c=c)
              for c in colors], [])
 pts = sum([ax.plot([], [], [], 'o', c=c)
            for c in colors], [])
 
-# prepare the axes limits and point-of-view
+# prepare the axes limits
 ax.set_xlim((-25, 25))
 ax.set_ylim((-35, 35))
 ax.set_zlim((5, 55))
+
+# set point-of-view: specified by (altitude degrees, azimuth degrees)
 ax.view_init(30, 0)
 
 # initialization function: plot the background of each frame
@@ -57,14 +57,16 @@ def init():
 
 # animation function.  This will be called sequentially with the frame number
 def animate(i):
-    i = (2 * i) % x[0].shape[0]
+    # we'll step two time-steps per frame.  This leads to nice results.
+    i = (2 * i) % x_t.shape[1]
 
-    for line, pt, xi in zip(lines, pts, x):
-        line.set_data(xi[:i, 0], xi[:i, 1])
-        line.set_3d_properties(xi[:i, 2])
+    for line, pt, xi in zip(lines, pts, x_t):
+        x, y, z = xi[:i].T
+        line.set_data(x, y)
+        line.set_3d_properties(z)
 
-        pt.set_data(xi[i - 1:i, 0], xi[i - 1:i, 1])
-        pt.set_3d_properties(xi[i - 1:i, 2])
+        pt.set_data(x[-1:], y[-1:])
+        pt.set_3d_properties(z[-1:])
 
     ax.view_init(30, 0.3 * i)
     fig.canvas.draw()
@@ -75,6 +77,6 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
                                frames=500, interval=30, blit=True)
 
 # Save as mp4. This requires mplayer or ffmpeg to be installed
-anim.save('lorentz_attractor.mp4', fps=15, extra_args=['-vcodec', 'libx264'])
+#anim.save('lorentz_attractor.mp4', fps=15, extra_args=['-vcodec', 'libx264'])
 
 plt.show()
