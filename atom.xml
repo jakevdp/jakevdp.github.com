@@ -4,7 +4,7 @@
   <title><![CDATA[Pythonic Perambulations]]></title>
   <link href="http://jakevdp.github.com/atom.xml" rel="self"/>
   <link href="http://jakevdp.github.com/"/>
-  <updated>2013-02-02T14:09:37-08:00</updated>
+  <updated>2013-02-16T08:25:29-08:00</updated>
   <id>http://jakevdp.github.com/</id>
   <author>
     <name><![CDATA[Jake Vanderplas]]></name>
@@ -12,6 +12,295 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Animating the Lorentz System in 3D]]></title>
+    <link href="http://jakevdp.github.com/blog/2013/02/16/animating-the-lorentz-system-in-3d/"/>
+    <updated>2013-02-16T08:05:00-08:00</updated>
+    <id>http://jakevdp.github.com/blog/2013/02/16/animating-the-lorentz-system-in-3d</id>
+    <content type="html"><![CDATA[<p>One of the things I really enjoy about Python is how easy it makes it to solve
+interesting problems and visualize those solutions in a compelling way. I&#8217;ve
+done several posts on creating animations using matplotlib&#8217;s relatively new
+<a href="http://matplotlib.sourceforge.net/api/animation_api.html">animation toolkit</a>:
+(some examples are a chaotic
+<a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/">double pendulum</a>,
+the collisions of
+<a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/">particles in a box</a>,
+the time-evolution of a
+<a href="http://jakevdp.github.com/blog/2012/09/05/quantum-python/">quantum-mechanical wavefunction</a>,
+and even a scene from the classic video game,
+<a href="http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/">Super Mario Bros.</a>).</p>
+
+<p>Recently, a reader <a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/#comment-799781196">commented</a> asking whether I might do a 3D animation example.  Matplotlib
+has a decent 3D toolkit called
+<a href="http://matplotlib.org/mpl_toolkits/mplot3d/index.html">mplot3D</a>,
+and though I haven&#8217;t previously seen it used in conjunction with the
+animation tools, there&#8217;s nothing fundamental that prevents it.</p>
+
+<p>At the commenter&#8217;s suggestion, I decided to try this out with a simple
+example of a chaotic system: the Lorentz equations.</p>
+
+<!-- more -->
+
+
+<h2>Solving the Lorentz System</h2>
+
+<p>The <a href="http://en.wikipedia.org/wiki/Lorenz_system">Lorentz Equations</a> are a
+system of three coupled, first-order, nonlinear differential equations
+which describe the trajectory of a particle through time.
+The system was originally derived by Lorentz as a model
+of atmospheric convection, but the deceptive simplicity
+of the equations have made them an often-used example in fields beyond
+atmospheric physics.</p>
+
+<p>The equations describe the evolution of the spatial variables $x$, $y$,
+and $z$, given the governing parameters $\sigma$, $\beta$, and $\rho$,
+through the specification of the time-derivatives of the spatial variables:</p>
+
+<p>${\rm d}x/{\rm d}t = \sigma(y - x)$</p>
+
+<p>${\rm d}y/{\rm d}t = x(\rho - z) - y$</p>
+
+<p>${\rm d}z/{\rm d}t = xy - \beta z$</p>
+
+<p>The resulting dynamics are entirely deterministic giving a starting point
+$(x_0, y_0, z_0)$ and a time interval $t$.  Though it looks straightforward,
+for certain choices of the parameters $(\sigma, \rho, \beta)$, the
+trajectories become chaotic, and the resulting trajectories display some
+surprising properties.</p>
+
+<p>Though no general analytic solution exists for this system, the solutions
+can be computed numerically.
+Python makes this sort of problem very easy to solve: one can
+simply use Scipy&#8217;s interface to
+<a href="https://computation.llnl.gov/casc/odepack/odepack_home.html">ODEPACK</a>,
+an optimized Fortran package for solving ordinary differential equations.
+Here&#8217;s how the problem can be set up:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Note: t0 is required for the odeint function, though it&#39;s not used here.</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">lorentz_deriv</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">t0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">8.</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">28.0</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Compute the time-derivative of a Lorentz system.&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">rho</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">z</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c"># starting vector</span>
+</span><span class='line'><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>  <span class="c"># one thousand time steps</span>
+</span><span class='line'><span class="n">x_t</span> <span class="o">=</span> <span class="n">integrate</span><span class="o">.</span><span class="n">odeint</span><span class="p">(</span><span class="n">lorentz_deriv</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&#8217;s all there is to it!</p>
+
+<h2>Visualizing the results</h2>
+
+<p>Now that we&#8217;ve computed these results, we can use matplotlib&#8217;s
+animation and 3D plotting toolkits
+to visualize the trajectories of several particles.  Because
+I&#8217;ve described the animation tools in-depth in a
+<a href="http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/">previous post</a>,
+I will skip that discussion here and jump straight into the code:</p>
+
+<figure class='code'><figcaption><span>Lorentz System (lorentz_animation.py)</span> <a href='http://jakevdp.github.com/downloads/code/lorentz_animation.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+</pre></td><td class='code'><pre><code class='py'><span class='line'><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
+</span><span class='line'>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">cnames</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">animation</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">N_trajectories</span> <span class="o">=</span> <span class="mi">20</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">lorentz_deriv</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span> <span class="n">t0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">8.</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">28.0</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;Compute the time-derivative of a Lorentz system.&quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[</span><span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">x</span><span class="p">),</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="n">rho</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">z</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Choose random starting points, uniformly distributed from -15 to 15</span>
+</span><span class='line'><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="n">x0</span> <span class="o">=</span> <span class="o">-</span><span class="mi">15</span> <span class="o">+</span> <span class="mi">30</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="n">N_trajectories</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Solve for the trajectories</span>
+</span><span class='line'><span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+</span><span class='line'><span class="n">x_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">integrate</span><span class="o">.</span><span class="n">odeint</span><span class="p">(</span><span class="n">lorentz_deriv</span><span class="p">,</span> <span class="n">x0i</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+</span><span class='line'>                  <span class="k">for</span> <span class="n">x0i</span> <span class="ow">in</span> <span class="n">x0</span><span class="p">])</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Set up figure &amp; 3D axis for animation</span>
+</span><span class='line'><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+</span><span class='line'><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">projection</span><span class="o">=</span><span class="s">&#39;3d&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># choose a different color for each trajectory</span>
+</span><span class='line'><span class="n">colors</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N_trajectories</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># set up lines and points</span>
+</span><span class='line'><span class="n">lines</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+</span><span class='line'>             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">],</span> <span class="p">[])</span>
+</span><span class='line'><span class="n">pts</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+</span><span class='line'>           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">],</span> <span class="p">[])</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># prepare the axes limits</span>
+</span><span class='line'><span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="o">-</span><span class="mi">25</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>
+</span><span class='line'><span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="mi">35</span><span class="p">))</span>
+</span><span class='line'><span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">55</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># set point-of-view: specified by (altitude degrees, azimuth degrees)</span>
+</span><span class='line'><span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># initialization function: plot the background of each frame</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">line</span><span class="p">,</span> <span class="n">pt</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">pts</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">line</span><span class="o">.</span><span class="n">set_data</span><span class="p">([],</span> <span class="p">[])</span>
+</span><span class='line'>        <span class="n">line</span><span class="o">.</span><span class="n">set_3d_properties</span><span class="p">([])</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">pt</span><span class="o">.</span><span class="n">set_data</span><span class="p">([],</span> <span class="p">[])</span>
+</span><span class='line'>        <span class="n">pt</span><span class="o">.</span><span class="n">set_3d_properties</span><span class="p">([])</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">lines</span> <span class="o">+</span> <span class="n">pts</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># animation function.  This will be called sequentially with the frame number</span>
+</span><span class='line'><span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+</span><span class='line'>    <span class="c"># we&#39;ll step two time-steps per frame.  This leads to nice results.</span>
+</span><span class='line'>    <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span> <span class="o">%</span> <span class="n">x_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span> <span class="n">line</span><span class="p">,</span> <span class="n">pt</span><span class="p">,</span> <span class="n">xi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">pts</span><span class="p">,</span> <span class="n">x_t</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+</span><span class='line'>        <span class="n">line</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">line</span><span class="o">.</span><span class="n">set_3d_properties</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">pt</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:],</span> <span class="n">y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+</span><span class='line'>        <span class="n">pt</span><span class="o">.</span><span class="n">set_3d_properties</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">fig</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">lines</span> <span class="o">+</span> <span class="n">pts</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># instantiate the animator.</span>
+</span><span class='line'><span class="n">anim</span> <span class="o">=</span> <span class="n">animation</span><span class="o">.</span><span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">animate</span><span class="p">,</span> <span class="n">init_func</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>
+</span><span class='line'>                               <span class="n">frames</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">blit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Save as mp4. This requires mplayer or ffmpeg to be installed</span>
+</span><span class='line'><span class="c">#anim.save(&#39;lorentz_attractor.mp4&#39;, fps=15, extra_args=[&#39;-vcodec&#39;, &#39;libx264&#39;])</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The resulting animation looks something like this:</p>
+
+<p><video width='360' height='270' preload='none' controls poster=' /downloads/videos/lorentz_attractor_frame.png'><source src='http://jakevdp.github.com/downloads/videos/lorentz_attractor.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+
+<p>Notice that there are two locations in the space that seem to draw-in all
+paths: these are the so-called &#8220;Lorentz attractors&#8221;, and have some interesting
+properties which you can read about elsewhere.  The qualitative
+characteristics of these Lorentz attractors
+vary in somewhat surprising ways as the parameters
+$(\sigma, \rho, \beta)$ are changed.  If you are so inclined, you may
+wish to download the above code and play with these values to see what
+the results look like.</p>
+
+<p>I hope that this brief exercise has shown you the power and flexibility of
+Python for understanding and visualizing a large array of problems, and
+perhaps given you the inspiration to explore similar problems.</p>
+
+<p>Happy coding!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Setting Up a Mac for Python Development]]></title>
