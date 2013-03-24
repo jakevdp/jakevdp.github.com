@@ -143,13 +143,12 @@ Looking toward the future, these are significant challenges for matplotlib.
 I have no doubt that with a healthy effort from the development community,
 along with a good dose of vision and leadership, matplotlib could adapt and
 remain the leading visualization package in Python.  But there are challengers:
-other packages exist which have solved some of these issues:
 [NodeBox OpenGL](http://www.cityinabottle.org/nodebox/) solves some of the
 interactivity problems by providing a powerful interface on a single,
 universally available graphics backend.
 Packages like [Chaco](http://code.enthought.com/chaco/) and
 [MayaVi](http://code.enthought.com/projects/mayavi/) push the boundaries in
-interaction, extensibility, and 3D capabilities.  But all three of these
+interaction, extensibility, and 3D capabilities. But all three of these
 options are still married to the old server-side paradigm of tools like
 matplotlib and gnuplot rather than the client-side paradigm of tools like
 IPython notebook, Protovis, and D3.
@@ -169,8 +168,8 @@ displays many parallels:
 - Just as matplotlib achieves cross-platform ubiquity using the old model of
   multiple backends, Bokeh achieves cross-platform ubiquity through IPython’s
   new model of in-browser, client-side rendering.
-- Just as matplotlib was familiar to MatLab users, Bokeh is familiar to
-  ggplot users
+- Just as matplotlib uses a syntax familiar to MatLab users, Bokeh uses a
+  syntax familiar to R/ggplot users
 - Just as matplotlib had a coherent vision of focusing on 2D cross-platform
   graphics, Bokeh has a coherent vision of building a ggplot-inspired,
   in-browser interactive visualization tool
@@ -185,12 +184,12 @@ displays many parallels:
 Above all that, Bokeh, like matplotlib, is entirely open-sourced.  Now, I
 should make clear that Bokeh still has a long way to go.  Its installation
 instructions & examples are still a bit incomplete and opaque.  It currently
-provides no way of outputting PNG or PDF views of the graphics it produces.
+provides no way of outputting PNG or PDF versions of the graphics it produces.
 Many of its goals still lie more firmly in the realm of vision than in the
 realm of implementation. But for the reasons I gave above, I think it’s
 a project to keep watching.
 
-And where does that leave matplotlib?  I would not by any means discount
+And where does that leave matplotlib?  I would not, by any means, discount
 it just yet.
 Still, as John Hunter noted last summer, it faces some significant challenges,
 particularly in the area of client-rendered, dynamic visualizations.  Any
@@ -199,7 +198,8 @@ SciPy keynote: it was his last public outline of his vision for the project
 he started and led over the course of a decade.  An IPython
 notebook-compatible client-side matplotlib viewer along the lines of the
 ideas John mentioned at the end of his talk would be the killer app
-that would, in all likelihood, maintain matplotlib as the *de facto*
+that would, in all likelihood, allow matlotlib to maintain its position
+as the *de facto*
 standard visualization package for the Scientific Python community.
 
 And all that being said, regardless of what the future brings, you can be
