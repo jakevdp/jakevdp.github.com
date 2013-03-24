@@ -5,13 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>3D Interactive Rubik's Cube in Python - Pythonic Perambulations</title>
+  <title>Matplotlib and the Future of Visualization in Python - Pythonic Perambulations</title>
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Over the weekend, I built a interactive 3D Rubik&#8217;s cube simulator in python
-using only matplotlib for all the graphics and
-interaction. Check &hellip;">
+  <meta name="description" content="Last week, I had the privilege of attending and speaking at the
+PyCon and PyData conferences in Santa Clara, CA. As usual, there were some
+amazing &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +20,7 @@ interaction. Check &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/">
+  <link rel="canonical" href="http://jakevdp.github.com/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -881,7 +881,7 @@ init_mathjax();
   
   <header>
     
-      <h1 class="entry-title">3D Interactive Rubik's Cube in Python</h1>
+      <h1 class="entry-title">Matplotlib and the Future of Visualization in Python</h1>
     
     
       <p class="meta">
@@ -897,7 +897,7 @@ init_mathjax();
   
 
 
-<time datetime="2012-11-26T22:00:00-08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2012</time>
+<time datetime="2013-03-23T08:31:00-07:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -906,39 +906,217 @@ init_mathjax();
   </header>
 
 
-<div class="entry-content"><p>Over the weekend, I built a interactive 3D Rubik&#8217;s cube simulator in python
-using only <a href="http://matplotlib.org">matplotlib</a> for all the graphics and
-interaction.  Check out the demonstration here:</p>
+<div class="entry-content"><p>Last week, I had the privilege of attending and speaking at the
+PyCon and PyData conferences in Santa Clara, CA.  As usual, there were some
+amazing and inspiring talks throughout: I would highly recommend browsing
+through the videos as they are put up on
+<a href="http://pyvideo.org/category/33/pycon-us-2013">pyvideo</a>.</p>
 
-<p><video width='680' height='400' preload='none' controls poster=' /downloads/videos/MagicCube_frame.jpg'><source src='/downloads/videos/MagicCube.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
-
-<p>You can browse the source code at the MagicCube github repository:
-<a href="http://github.com/davidwhogg/MagicCube">http://github.com/davidwhogg/MagicCube</a>.</p>
+<p>One thing I spent a lot of time thinking, talking, and learning about
+during these two conferences was the topic of data visualization in Python.
+Data visualization seemed to be everywhere: PyData had
+<a href="http://sv2013.pydata.org/abstracts/#11">two</a>
+<a href="http://sv2013.pydata.org/abstracts/#15">tutorials</a>
+on matplotlib (the second given by yours truly), as well as a talk about
+<a href="http://sv2013.pydata.org/abstracts/#41">NodeBox OpenGL</a> and a
+<a href="http://sv2013.pydata.org/keynotes/#abstract_33">keynote</a> by
+Fernando Perez about IPython, including the notebook and the
+nice interactive data-visualization it allows. Pycon had a tutorial on
+<a href="https://us.pycon.org/2013/schedule/presentation/29/">network visualization</a>,
+a talk on <a href="https://us.pycon.org/2013/schedule/presentation/58/">generating art</a>
+in Python, and a talk on
+<a href="https://us.pycon.org/2013/schedule/presentation/108/">visualizing Github</a>.</p>
 
 <!-- more -->
 
 
-<p>The 3D rendering is based on the quaternions and projections  discussed in
-my <a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">previous post</a>,
-and many of the key bindings discussed there are used here.
-The additional component is the turning of each face.  This is actually
-fairly simple to accomplish using the tools discussed above.</p>
+<p></p>
 
-<p>For example, the right face is perpendicular to the x-axis in the cube-frame.
-Thus to turn it, you only need to manipulate polygons with x-coordinate
-between 1/3 and 1 inclusive (the cube has side-length 2 and is centered on
-the origin).  The correct faces are found quickly using
-numpy&#8217;s <code>where</code> statement, and a quaternion rotation is applied only to
-these faces.  Easy!</p>
+<p>The latter of these I found to be a bit abstract &#8211; more discussion of visual
+design principles than particular tools or results &#8211; but contained one
+interesting nugget: though D3 is the current state-of-the-art for
+publication-quality online, interactive visualization, practitioners often
+use simpler tools like matplotlib or ggplot for their initial data exploration.
+This was a thought echoed by Lynn Cherny in her presentation about NodeBox
+OpenGL: it has some really nice features which allow the creation of beautiful,
+flexible, and interactive graphics within Python.  But if you just want to
+scatter-plot x versus y to see what your data looks like, matplotlib might
+be a better option.</p>
 
-<p>The code and interface still needs some work, and I&#8217;m hoping to add more
-features as I have time.  After spending my long weekend working on this,
-I have some real work to catch-up on&#8230;</p>
+<p>I found Lynn’s talk incredibly interesting, and not just because of the
+good-natured heckling I received from the stage!  Her main point was that
+in the case of interactive &amp; animated visualization, matplotlib is relatively
+limited.  She introduced us to a project called
+<a href="http://www.cityinabottle.org/nodebox/">NodeBox OpenGL</a>, which is a
+cross-platform graphics creation package that has some nice Python bindings,
+and can create some absolutely beautiful graphics.  This is one example of a
+physics flow visualization, taken from the above website:</p>
 
-<p><em>Update: I&#8217;ve heard from some folks that the key and mouse bindings don&#8217;t
-work on some operating systems or backends.  If you experience
-system-dependent bugs and have any insight into the problem, I&#8217;d appreciate
-help working out what&#8217;s happening!</em></p>
+<p><img class="center" src="/images/nodebox-physics-flock.jpg" title="'NodeBox OpenGL visualization'" ></p>
+
+<p>Despite Lynn’s admission that, with regards to the limitations of matplotlib,
+I had taken a bit of the wind out of her sails with my interactive matplotlib
+tutorial the day before (in which many of the examples I used will be familiar
+to readers of this blog), I think her point on the limitations of matplotlib
+is very well-put.  Though it remains my tool of choice for data visualization
+and the creation of publication-quality scientific graphics, matplotlib is
+also a decade-old platform, and sometimes shows its age.</p>
+
+<h2>Matplotlib’s History</h2>
+
+<p>Matplotlib is a multi-platform data visualization tool built upon the Numpy
+and Scipy framework.  It was conceived by John Hunter in 2002, originally as
+a patch to IPython to enable interactive MatLab-style plotting via gnuplot
+from the IPython command-line.  Fernando Perez was, at the time, scrambling
+to finish his PhD, and let John know he wouldn’t have time to review the patch
+for several months.  John took this as a cue to set out on his own, and the
+matplotlib package was born, with version 0.1 released in 2003.  It received
+an early boost when it was adopted as the plotting package of choice of the
+Space Telescope Science Institute, which financially supported matplotlib’s
+development and led to greatly expanded capabilities.</p>
+
+<p>One of matplotlib’s most important features is its ability to play well with
+many operating systems and graphics backends. John Hunter highlighted this
+fact in a keynote talk he gave last summer, shortly before his sudden and
+tragic passing (<a href="http://pyvideo.org/video/1192/matplotlib-lessons-from-middle-age-or-how-you">video link</a>):
+“We didn’t try to be the best in the beginning, we just tried to be <em>there</em>&#8230;”
+and fill-in the features as needed.  In this talk, John outlined the reasons
+he thinks matplotlib succeeded in outlasting the dozens of competing packages:</p>
+
+<ul>
+<li>it could be used on any operating system via its array of backends</li>
+<li>it had a familiar interface: one similar to MatLab</li>
+<li>it had a coherent vision: to do 2D graphics, and do them well</li>
+<li>it found early institutional support, from astronomers at STScI and JPL</li>
+<li>it had an outspoken advocate in Hunter himself, who enthusiastically
+promoted the project within the Python world</li>
+</ul>
+
+
+<h2>Matplotlib’s Challenge</h2>
+
+<p>This cross-platform, everything-to-everyone approach has been one of the great
+strengths of matplotlib.  It has led to a large user-base, which in turn
+has led to an active developer base and matplotlib’s powerful tools and
+ubiquity within the scientific Python world.  But as the
+world of graphics visualization has changed, this strength has started to
+become matplotlib’s main weakness.  The hooks into multiple backends work
+well for static images, but can be cumbersome and unpredictable for more
+dynamic, interactive plots (for example, the animation toolkit still does
+not work with the MacOSX backend, and this is
+<a href="https://github.com/matplotlib/matplotlib/issues/531">unlikely to improve</a>
+any time soon).</p>
+
+<p>Contrast this with one of the other great success stories in the scientific
+Python world, the IPython Notebook.  It brings powerful, interactive computing
+tools to the fingertips of the user, and works well across all platforms.
+The IPython team, rather than spending time creating backend hooks for all
+possible graphics toolkits, built the notebook to work in the browser,
+effectively outsourcing the cross-platform compatibility problem to browser
+providers.  This decision, I believe, is a fundamental piece which enabled
+IPython notebook to become so widely adopted during its short existence.
+The developers have been freed to spend their time implementing features,
+rather than struggling with cross-platform compatibility.  Drawing from this
+lesson, I would venture to predict that whichever graphics package is the
+community standard five years from now will have adopted this approach as well.</p>
+
+<p>The matplotlib developers, of course, know this very well.  In his SciPy 2012
+keynote mentioned above, John Hunter talked about lessons learned from ten
+years of growing matplotlib, the challenges matplotlib faces, and the path
+toward the future.  Prominently mentioned among the challenges was the fact
+that users have come to expect dynamic, interactive, client-side graphics
+rendering seen in popular tools like Protovis and D3.  Further, they’ve come
+to value and desire graphical tools which fit naturally in the research flow
+enabled by the IPython notebook (just look at the spontaneous applause Fernando
+received when showing off the IPython notebook/D3 integration in his
+<a href="http://www.youtube.com/watch?feature=player_embedded&amp;v=F4rFuIb1Ie4">PyCon Canada keynote</a></p>
+
+<p>I would add one more challenge to that: even simple, static 2D visualization
+concepts have come a long way since gnuplot and the advent of matplotlib:
+in particular,
+<a href="http://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448">The Grammar of Graphics</a>
+has helped evolve views on best practices for exploratory data visualization.
+The ggplot integraion in R is one feature that users cite as a clear advantage
+over Python.  Yes, matplotlib is powerful enough to allow implemention of
+<a href="http://messymind.net/2012/07/making-matplotlib-look-like-ggplot/">some of these ideas</a>,
+but its plotting commands remain rather verbose, and its no-frills, default
+output looks much more like Excel circa 1993 than ggplot circa 2013.
+(for a quick look at Grammar of Graphics in a Python context, see Peter Wang’s
+<a href="http://pyvideo.org/video/1224/bokeh-an-extensible-implementation-of-the-gramma">Bokeh talk</a> from Scipy 2012).</p>
+
+<h2>The Future of Visualization in Python</h2>
+
+<p>Looking toward the future, these are significant challenges for matplotlib.
+I have no doubt that with a healthy effort from the development community,
+along with a good dose of vision and leadership, matplotlib could adapt and
+remain the leading visualization package in Python.  But there are challengers:
+other packages exist which have solved some of these issues:
+<a href="http://www.cityinabottle.org/nodebox/">NodeBox OpenGL</a> solves some of the
+interactivity problems by providing a powerful interface on a single,
+universally available graphics backend.
+Packages like <a href="http://code.enthought.com/chaco/">Chaco</a> and
+<a href="http://code.enthought.com/projects/mayavi/">MayaVi</a> push the boundaries in
+interaction, extensibility, and 3D capabilities.  But all three of these
+options are still married to the old server-side paradigm of tools like
+matplotlib and gnuplot rather than the client-side paradigm of tools like
+IPython notebook, Protovis, and D3.</p>
+
+<p>A more exciting option right now, in my view, is
+<a href="https://github.com/continuumio/bokeh">Bokeh</a>, a project of Peter Wang,
+Hugo Shi, and others at Continuum Analytics.  Bokeh is an effort to create
+a ggplot-inspired graphics package in Python which can produce beautiful,
+dynamic data visualizations in the web browser.  Though Bokeh is young and
+still missing a lot of features, I think it’s well-poised to address the
+challenges mentioned above.  In particular, it’s explicitly built around the
+ideas of Grammar of Graphics.  It is being designed toward a client-side,
+in-browser javascript backend to enable the sharing of interactive graphics,
+<em>a la</em> D3 and Protovis.  And comparing to matplotlib’s success story, Bokeh
+displays many parallels:</p>
+
+<ul>
+<li>Just as matplotlib achieves cross-platform ubiquity using the old model of
+multiple backends, Bokeh achieves cross-platform ubiquity through IPython’s
+new model of in-browser, client-side rendering.</li>
+<li>Just as matplotlib was familiar to MatLab users, Bokeh is familiar to
+ggplot users</li>
+<li>Just as matplotlib had a coherent vision of focusing on 2D cross-platform
+graphics, Bokeh has a coherent vision of building a ggplot-inspired,
+in-browser interactive visualization tool</li>
+<li>Just as matplotlib found institutional support from STScI and JPL, Bokeh
+has institutional support from Continuum Analytics and the recent $3 million
+<a href="http://continuum.io/press/continuum-receives-darpa-xdata-funding">DARPA XDATA grant</a>.</li>
+<li>Just as matplotlib had John Hunter’s vision and enthusiastic advocacy,
+Bokeh has the same from Peter Wang.  Anyone who has met Peter will know
+that once you get him talking about projects he’s excited about, it’s hard
+to make him stop!</li>
+</ul>
+
+
+<p>Above all that, Bokeh, like matplotlib, is entirely open-sourced.  Now, I
+should make clear that Bokeh still has a long way to go.  Its installation
+instructions &amp; examples are still a bit incomplete and opaque.  It currently
+provides no way of outputting PNG or PDF views of the graphics it produces.
+Many of its goals still lie more firmly in the realm of vision than in the
+realm of implementation. But for the reasons I gave above, I think it’s
+a project to keep watching.</p>
+
+<p>And where does that leave matplotlib?  I would not by any means discount
+it just yet.
+Still, as John Hunter noted last summer, it faces some significant challenges,
+particularly in the area of client-rendered, dynamic visualizations.  Any
+core matplotlib developers reading this should go back and re-watch John’s
+SciPy keynote: it was his last public outline of his vision for the project
+he started and led over the course of a decade.  An IPython
+notebook-compatible client-side matplotlib viewer along the lines of the
+ideas John mentioned at the end of his talk would be the killer app
+that would, in all likelihood, maintain matplotlib as the <em>de facto</em>
+standard visualization package for the Scientific Python community.</p>
+
+<p>And all that being said, regardless of what the future brings, you can be
+assured that in the meantime I and many others will still be doing all our
+daily work and research using matplotlib. Despite its weaknesses and the
+challenges it faces, matplotlib is a powerful tool, and I don’t anticipate
+it withering away any time soon.</p>
 </div>
 
 
@@ -961,7 +1139,7 @@ help working out what&#8217;s happening!</em></p>
   
 
 
-<time datetime="2012-11-26T22:00:00-08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2012</time>
+<time datetime="2013-03-23T08:31:00-07:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
       
 
 
@@ -969,7 +1147,7 @@ help working out what&#8217;s happening!</em></p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/" data-via="jakevdp" data-counturl="http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/" data-via="jakevdp" data-counturl="http://jakevdp.github.com/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -980,10 +1158,8 @@ help working out what&#8217;s happening!</em></p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/" title="Previous Post: Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib">&laquo; Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib</a>
+        <a class="basic-alignment left" href="/blog/2013/02/16/animating-the-lorentz-system-in-3d/" title="Previous Post: Animating the Lorenz System in 3D">&laquo; Animating the Lorenz System in 3D</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2012/12/01/a-primer-on-python-metaclasses/" title="Next Post: A Primer on Python Metaclasses">A Primer on Python Metaclasses &raquo;</a>
       
     </p>
   </footer>
@@ -1104,8 +1280,8 @@ help working out what&#8217;s happening!</em></p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/';
-        var disqus_url = 'http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/';
+        var disqus_identifier = 'http://jakevdp.github.com/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/';
+        var disqus_url = 'http://jakevdp.github.com/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/';
         var disqus_script = 'embed.js';
       
     (function () {

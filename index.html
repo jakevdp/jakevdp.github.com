@@ -9,8 +9,9 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="One of the things I really enjoy about Python is how easy it makes it to solve
-interesting problems and visualize those solutions in a compelling way &hellip;">
+  <meta name="description" content="Last week, I had the privilege of attending and speaking at the
+PyCon and PyData conferences in Santa Clara, CA. As usual, there were some
+amazing &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -883,6 +884,68 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">Matplotlib and the Future of Visualization in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-23T08:31:00-07:00" pubdate data-updated="true">Mar 23<span>rd</span>, 2013</time>
+        
+         | <a href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Last week, I had the privilege of attending and speaking at the
+PyCon and PyData conferences in Santa Clara, CA.  As usual, there were some
+amazing and inspiring talks throughout: I would highly recommend browsing
+through the videos as they are put up on
+<a href="http://pyvideo.org/category/33/pycon-us-2013">pyvideo</a>.</p>
+
+<p>One thing I spent a lot of time thinking, talking, and learning about
+during these two conferences was the topic of data visualization in Python.
+Data visualization seemed to be everywhere: PyData had
+<a href="http://sv2013.pydata.org/abstracts/#11">two</a>
+<a href="http://sv2013.pydata.org/abstracts/#15">tutorials</a>
+on matplotlib (the second given by yours truly), as well as a talk about
+<a href="http://sv2013.pydata.org/abstracts/#41">NodeBox OpenGL</a> and a
+<a href="http://sv2013.pydata.org/keynotes/#abstract_33">keynote</a> by
+Fernando Perez about IPython, including the notebook and the
+nice interactive data-visualization it allows. Pycon had a tutorial on
+<a href="https://us.pycon.org/2013/schedule/presentation/29/">network visualization</a>,
+a talk on <a href="https://us.pycon.org/2013/schedule/presentation/58/">generating art</a>
+in Python, and a talk on
+<a href="https://us.pycon.org/2013/schedule/presentation/108/">visualizing Github</a>.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/02/16/animating-the-lorentz-system-in-3d/">Animating the Lorenz System in 3D</a></h1>
     
     
@@ -1432,76 +1495,6 @@ matplotlib which I think is quite nice.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Sparse Graphs in Python: Playing With Word Ladders</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-14T21:23:00-07:00" pubdate data-updated="true">Oct 14<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div class="ipynb">
-
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The recent <a href="http://sourceforge.net/projects/scipy">0.11 release</a> of scipy includes several new features,
-one of which is the <a href="http://docs.scipy.org/doc/scipy/reference/sparse.csgraph.html">sparse graph submodule</a>
-which I contributed, with help from other developers.  I&#8217;m pretty excited about this: there are some
-classic algorithms implemented, and it will open up whole new realms of computational possibilities in Python.</p>
-<p>Before we start, I should say: this post is based on a <a href="http://pyvideo.org/video/1346/lightning-talks-wednesday">lightning talk</a> I gave
-at Scipy 2012, and some of the material below comes from a <a href="http://docs.scipy.org/doc/scipy/reference/tutorial/csgraph.html">tutorial</a>
-I wrote for the scipy documentation.</p>
-<p>First: what exactly is a sparse graph?  Well, a graph is just a collection of nodes, which have links between them.
-<a href="http://networkx.lanl.gov/">NetworkX</a> has some good examples and diagrams.  Graphs can represent nearly anything:
-social network connections, where each node is a person and is connected to acquaintences;
-images, where each node is a pixel and is connected to neighboring pixels; points in a high-dimensional
-distribution, where each node is connected to its nearest neighbors; and practically anything else you can
-imagine.</p>
-<p>One very efficient way to represent graph data is in a sparse matrix: let&#8217;s call it <code>G</code>.  The matrix <code>G</code> is of size <code>N x N</code>,
-and <code>G[i, j]</code> gives the value of the connection between node <code>i</code> and node <code>j</code>.  A sparse graph contains
-mostly zeros: that is, most nodes have only a few connections.  This property turns out to be true in most cases of
-interest.</p>
-<p>The creation of the sparse graph submodule was motivated by several algorithms used in scikit-learn, including:</p>
-<ul>
-<li>Isomap: a manifold learning algorithm which requires finding the shortest paths in a graph</li>
-<li>Hierarchical clustering: a clustering algorithm based on a minimum spanning tree</li>
-<li>Spectral Decomposition: a projection algorithm based on sparse graph laplacians</li>
-</ul>
-<p>And many more.</p>
-</div>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1517,6 +1510,10 @@ interest.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">Matplotlib and the Future of Visualization in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/02/16/animating-the-lorentz-system-in-3d/">Animating the Lorenz System in 3D</a>
       </li>
     
@@ -1530,10 +1527,6 @@ interest.</p>
     
       <li class="post">
         <a href="/blog/2013/01/03/will-scientists-ever-move-to-python-3/">Will Scientists Ever Move to Python 3?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2012/12/19/sparse-svds-in-python/">Sparse SVDs in Python</a>
       </li>
     
   </ul>

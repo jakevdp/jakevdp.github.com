@@ -2,102 +2,108 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/08/08/memoryview-benchmarks/</loc>
-        <lastmod>2012-09-28T09:20:55-07:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/08/16/memoryview-benchmarks-2/</loc>
-        <lastmod>2012-09-28T09:20:55-07:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/08/18/matplotlib-animation-tutorial/</loc>
-        <lastmod>2012-09-28T09:20:55-07:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/08/24/numba-vs-cython/</loc>
-        <lastmod>2012-09-28T09:20:55-07:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/09/05/quantum-python/</loc>
-        <lastmod>2013-01-15T07:26:27-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/09/12/dynamic-programming-in-python/</loc>
-        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/09/20/why-python-is-the-last/</loc>
-        <lastmod>2012-09-28T09:20:55-07:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/09/26/optical-illusions-in-matplotlib/</loc>
-        <lastmod>2012-09-28T09:20:55-07:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/10/04/blogging-with-ipython/</loc>
-        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/10/07/xkcd-style-plots-in-matplotlib/</loc>
-        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://jakevdp.github.com/blog/2012/10/14/scipy-sparse-graph-module-word-ladders/
         </loc>
-        <lastmod>2012-11-15T16:18:23-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://jakevdp.github.com/blog/2012/11/24/simple-3d-visualization-in-matplotlib/
         </loc>
-        <lastmod>2012-11-24T11:18:34-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/</loc>
-        <lastmod>2012-11-26T22:15:21-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/12/01/a-primer-on-python-metaclasses/</loc>
-        <lastmod>2012-12-16T21:31:32-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/12/06/minesweeper-in-matplotlib/</loc>
-        <lastmod>2012-12-06T20:54:20-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2012/12/19/sparse-svds-in-python/</loc>
-        <lastmod>2012-12-20T12:08:43-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://jakevdp.github.com/blog/2013/01/03/will-scientists-ever-move-to-python-3/
         </loc>
-        <lastmod>2013-01-05T13:35:57-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2013/01/13/hacking-super-mario-bros-with-python/</loc>
-        <lastmod>2013-01-13T15:10:09-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>
             http://jakevdp.github.com/blog/2013/02/02/setting-up-a-mac-for-python-development/
         </loc>
-        <lastmod>2013-02-02T14:09:29-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/2013/02/16/animating-the-lorentz-system-in-3d/</loc>
-        <lastmod>2013-02-16T12:02:43-08:00</lastmod>
+        <lastmod>2013-03-23T08:25:01-07:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://jakevdp.github.com/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/
+        </loc>
+        <lastmod>2013-03-24T12:52:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/</loc>
-        <lastmod>2013-02-16T12:02:43-08:00</lastmod>
+        <lastmod>2013-03-24T12:52:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/blog/archives/</loc>
-        <lastmod>2013-02-16T12:02:43-08:00</lastmod>
+        <lastmod>2013-03-24T12:52:43-07:00</lastmod>
     </url>
     <url>
         <loc>http://jakevdp.github.com/about/</loc>
-        <lastmod>2013-02-16T12:02:43-08:00</lastmod>
+        <lastmod>2013-03-24T12:52:43-07:00</lastmod>
     </url>
 </urlset>

@@ -5,13 +5,14 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>3D Interactive Rubik's Cube in Python - Pythonic Perambulations</title>
+  <title>Pythonic Perambulations</title>
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Over the weekend, I built a interactive 3D Rubik&#8217;s cube simulator in python
-using only matplotlib for all the graphics and
-interaction. Check &hellip;">
+  <meta name="description" content="There was recently a thread
+on cython-users which caught my eye. It has to do with
+memoryviews, a new
+way of working with memory buffers in cython. I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -20,7 +21,7 @@ interaction. Check &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/">
+  <link rel="canonical" href="http://jakevdp.github.com/blog/page/3/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -876,12 +877,15 @@ init_mathjax();
 </nav>
   <div id="main">
     <div id="content">
-      <div>
-<article class="hentry" role="article">
+      <div class="blog-index">
   
+  
+  
+    <article>
+      
   <header>
     
-      <h1 class="entry-title">3D Interactive Rubik's Cube in Python</h1>
+      <h1 class="entry-title"><a href="/blog/2012/08/08/memoryview-benchmarks/">Memoryview Benchmarks</a></h1>
     
     
       <p class="meta">
@@ -897,106 +901,53 @@ init_mathjax();
   
 
 
-<time datetime="2012-11-26T22:00:00-08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2012</time>
+<time datetime="2012-08-08T18:50:00-07:00" pubdate data-updated="true">Aug 8<span>th</span>, 2012</time>
         
-         | <a href="#disqus_thread">Comments</a>
+         | <a href="/blog/2012/08/08/memoryview-benchmarks/#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>Over the weekend, I built a interactive 3D Rubik&#8217;s cube simulator in python
-using only <a href="http://matplotlib.org">matplotlib</a> for all the graphics and
-interaction.  Check out the demonstration here:</p>
+  <div class="entry-content"><p>There was recently a <a href="https://groups.google.com/forum/?fromgroups#!topic/cython-users/8uuxjB_wbBQ[1-25]" title="cython-users archive">thread</a>
+on cython-users which caught my eye.  It has to do with
+<a href="http://docs.cython.org/src/userguide/memoryviews.html">memoryviews</a>, a new
+way of working with memory buffers in cython.</p>
 
-<p><video width='680' height='400' preload='none' controls poster=' /downloads/videos/MagicCube_frame.jpg'><source src='/downloads/videos/MagicCube.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
+<p>I&#8217;ve been thinking recently about how to do fast
+and flexible memory buffer access in cython.  I contributed the
+<a href="http://scikit-learn.org/stable/modules/generated/sklearn.neighbors.BallTree.html">BallTree</a>
+implementation for nearest neighbors searching in
+<a href="http://www.scikit-learn.org">scikit-learn</a>, and have been actively thinking
+about how to make it faster and more flexible, including adding the ability
+to specify distance metrics other than euclidean and minkowski.</p>
 
-<p>You can browse the source code at the MagicCube github repository:
-<a href="http://github.com/davidwhogg/MagicCube">http://github.com/davidwhogg/MagicCube</a>.</p>
+<p>In order to accomplish this, I&#8217;d like to have a set of distance metric
+functions which take two vectors and compute a distance.  There would
+be many functions with similar call signatures which could then be
+plugged into a code that would iterate over a set of vectors and
+compute the appropriate distances.</p>
 
-<!-- more -->
-
-
-<p>The 3D rendering is based on the quaternions and projections  discussed in
-my <a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">previous post</a>,
-and many of the key bindings discussed there are used here.
-The additional component is the turning of each face.  This is actually
-fairly simple to accomplish using the tools discussed above.</p>
-
-<p>For example, the right face is perpendicular to the x-axis in the cube-frame.
-Thus to turn it, you only need to manipulate polygons with x-coordinate
-between 1/3 and 1 inclusive (the cube has side-length 2 and is centered on
-the origin).  The correct faces are found quickly using
-numpy&#8217;s <code>where</code> statement, and a quaternion rotation is applied only to
-these faces.  Easy!</p>
-
-<p>The code and interface still needs some work, and I&#8217;m hoping to add more
-features as I have time.  After spending my long weekend working on this,
-I have some real work to catch-up on&#8230;</p>
-
-<p><em>Update: I&#8217;ve heard from some folks that the key and mouse bindings don&#8217;t
-work on some operating systems or backends.  If you experience
-system-dependent bugs and have any insight into the problem, I&#8217;d appreciate
-help working out what&#8217;s happening!</em></p>
 </div>
-
-
-  <footer>
-    <p class="meta">
-      
   
-
-<span class="byline author vcard">Posted by <span class="fn">Jake Vanderplas</span></span>
-
-      
-
-
-
-
-
-
-
-
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/08/memoryview-benchmarks/">Read on &rarr;</a>
+    </footer>
   
 
 
-<time datetime="2012-11-26T22:00:00-08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2012</time>
-      
-
-
-    </p>
+    </article>
+  
+  <div class="pagination">
     
-      <div class="sharing">
-  
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/" data-via="jakevdp" data-counturl="http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/" >Tweet</a>
-  
-  
-  <div class="g-plusone" data-size="medium"></div>
-  
-  
-</div>
-
+    <a href="/blog/archives">Blog Archives</a>
     
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/" title="Previous Post: Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib">&laquo; Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/12/01/a-primer-on-python-metaclasses/" title="Next Post: A Primer on Python Metaclasses">A Primer on Python Metaclasses &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a class="next" href="/blog/page/2/">Newer &rarr;</a>
+    
+  </div>
 </div>
-  </section>
-
-</div>
-
 <aside class="sidebar">
   
     <section>
@@ -1029,7 +980,7 @@ help working out what&#8217;s happening!</em></p>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   
   <a href="https://github.com/jakevdp">@jakevdp</a> on GitHub
@@ -1059,7 +1010,7 @@ help working out what&#8217;s happening!</em></p>
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating...</li>
+    <li class="loading">Status updating&#8230;</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -1088,7 +1039,6 @@ help working out what&#8217;s happening!</em></p>
   
 </aside>
 
-
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -1103,10 +1053,7 @@ help working out what&#8217;s happening!</em></p>
       var disqus_shortname = 'pythonicperambulations';
       
         
-        // var disqus_developer = 1;
-        var disqus_identifier = 'http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/';
-        var disqus_url = 'http://jakevdp.github.com/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/';
-        var disqus_script = 'embed.js';
+        var disqus_script = 'count.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
