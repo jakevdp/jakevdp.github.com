@@ -55,7 +55,7 @@ a code golf solution to a fun little problem: solving Sudoku.</p>
 of numbers, with some spaces left blank.
 The grid must be filled so that each row, column,
 and 3x3 box contains the numbers 1-9.  It's a generalization of the
-<em>Latin Squares</em> first studied by Leonard Euler nearly 400 years ago.</p>
+<em>Latin Squares</em> first studied by Leonhard Euler nearly 300 years ago.</p>
 <p>The reason I chose to use Sudoku here is simple: not only is today
 Euler's birthday, but Sudoku is how I first learned Python.
 My first year of graduate school, my research advisor
@@ -126,9 +126,9 @@ code snippet I showed above:</p>
 </div>
 </div>
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It's rather unenlightening in itself, so below I'll explain the process
-I went through to arrive at it, in hopes that you can learn from my
-own thought process.  Though this is the best solution I was able to come
+<p>It's rather unenlightening in itself, so below I'll explain the steps
+I took to arrive at it, in hopes that you can learn from my
+thought process.  Though this is the best solution I was able to come
 up with, I don't know whether or not a better one might be out there.
 If you can beat it, please post your solution in the blog comment thread!</p>
 <p>Finally, note that we'll write everything below using python 3 syntax.
@@ -157,7 +157,7 @@ by running the following:</p>
 For this reason, I generally start by simply writing correct code, and
 not for the moment worrying about brevity.</p>
 <p>In the case of Sudoku, there are many rules and rubriks that can be used
-to create an efficient solver (read about some of them <a href="">here</a>).
+to create an efficient solver (read about some of them <a href="http://www.sudokuoftheday.com/pages/techniques-overview.php">here</a>).
 Using these, it is possible to solve most (all?) Sudoku puzzles without
 resorting to guess-and-check approaches.  To implement this strategy,
 one approach might be to enumerate the sets of possible values
@@ -394,9 +394,9 @@ or generator expressions, but are denoted with curly brackets: <code>{}</code>.<
 <pre class="ipynb"><code>(A or B)
 </code></pre>
 <p>you might expect the result to be either <code>True</code> or <code>False</code>.  Instead, Python
-does something a bit clever.  If the result is True, it returns <code>A</code> (which,
-naturally, evaluates to <code>True</code>).  If the result is False, it returns <code>A</code> if
-<code>A</code> evaluates to <code>False</code>, and <code>B</code> otherwise.  We can use this fact to
+does something a bit clever.  If the result is False, it returns <code>A</code> (which,
+naturally, evaluates to <code>False</code>).  If the result is True, it returns <code>A</code> if
+<code>A</code> evaluates to <code>True</code>, and <code>B</code> otherwise.  We can use this fact to
 remove the <code>if</code> statement completely from the set comprehension.  We'll end
 up with some extra values within the second set, but the set difference conveniently
 removes these.</p>
