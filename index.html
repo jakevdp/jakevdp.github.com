@@ -9,9 +9,9 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Last week, I had the privilege of attending and speaking at the
-PyCon and PyData conferences in Santa Clara, CA. As usual, there were some
-amazing &hellip;">
+  <meta name="description" content="A highlight of PyCon each year for me is working on the little coding
+challenges offered by companies in the expo center.
+I love testing my Python &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -884,6 +884,91 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/04/15/code-golf-in-python-sudoku/">Code Golf in Python: Sudoku</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-15T16:00:00-07:00" pubdate data-updated="true">Apr 15<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/04/15/code-golf-in-python-sudoku/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="ipynb">
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A highlight of PyCon each year for me is working on the little coding
+challenges offered by companies in the expo center.
+I love testing my Python prowice against the problems they pose (and
+being rewarded with a branded mug or T-shirt!)
+This year, several of the challenges involved what&#8217;s become known as
+<a href="http://codegolf.com/">code golf</a>: writing a solution with minimal keystrokes.</p>
+<p>By way of example, take a look at this function definition:</p>
+</div>
+<div class="cell border-box-sizing code_cell vbox">
+<div class="input hbox">
+<div class="prompt input_prompt">In [&nbsp;]:</div>
+<div class="input_area box-flex1">
+<div class="highlight-ipynb"><pre class="ipynb"><span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="n">p</span><span class="p">):</span><span class="n">i</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">);</span><span class="k">yield</span> <span class="n">from</span><span class="p">(</span><span class="n">s</span>
+<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">5</span><span class="o">**</span><span class="mi">18</span><span class="p">))</span><span class="o">-</span><span class="p">{(</span><span class="n">i</span><span class="o">-</span><span class="n">j</span><span class="p">)</span><span class="o">%</span><span class="k">9</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">//</span><span class="mi">9</span><span class="o">^</span><span class="n">j</span><span class="o">//</span><span class="mi">9</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">//</span><span class="mi">27</span><span class="o">^</span><span class="n">j</span><span class="o">//</span><span class="mi">27</span><span class="o">|</span><span class="n">i</span><span class="o">%</span><span class="k">9</span><span class="o">//</span><span class="mi">3</span><span class="o">^</span><span class="n">j</span><span class="o">%</span><span class="k">9</span><span class="o">//</span><span class="mi">3</span><span class="p">)</span><span class="ow">or</span>
+<span class="n">p</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">81</span><span class="p">)}</span><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">S</span><span class="p">(</span><span class="n">p</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">v</span><span class="o">+</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">:]))</span><span class="k">if</span><span class="o">~</span><span class="n">i</span> <span class="k">else</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is a valid function definition (in Python 3.3+) which executes a
+particular task.  I&#8217;ll give more information on the purpose of this
+script later on, but for now I&#8217;ll leave it to the reader to ponder
+over what it might do.</p>
+<p>Given the level of obfuscation involved, you might wonder what the point
+is: you&#8217;d never want to write &#8220;real&#8221; code in this style, so why spend the
+time doing it? I&#8217;d argue that it&#8217;s useful for more than just upping your
+geek cred: good Python code golf must utilize many quirks of the Python
+language in seeking brevity above all else.  Learning to utilize these
+quirks can lead to a much deeper understanding of the Python language.</p>
+<p>I thought about putting together a list of tricks that can help lead to
+short programs, but the problem is there are so many of them (and there
+are other pages out there which do this adequately enough).  Instead,
+I decided to simply work through a step-by-step example of creating
+a code golf solution to a fun little problem: solving Sudoku.</p>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="http://jakevdp.github.com/images/sudoku.png" width=400></p>
+</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/15/code-golf-in-python-sudoku/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">Matplotlib and the Future of Visualization in Python</a></h1>
     
     
@@ -1438,63 +1523,6 @@ interaction.  Check out the demonstration here:</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-24T11:04:00-08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><div class="ipynb">
-
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Matplotlib is a powerful framework, but its 3D capabilities still have
-a lot of room to grow. The <a href="http://matplotlib.org/mpl_toolkits/mplot3d/index.html">mplot3d</a>
-toolkit allows for several kinds of 3D plotting, but the ability to create
-and rotate solid 3D objects is hindered by the inflexibility of the <code>zorder</code> attribute:
-because it is not updated when the view is rotated, things in the &#8220;back&#8221; will cover
-things in the &#8220;front&#8221;, obscuring them and leading to very unnatural-looking results.</p>
-<p>I decided to see if I could create a simple script that addresses this.  Though it would
-be possible to use the built-in <code>mplot3d</code> architecture to take care of rotating and
-projecting the points, I decided to do it from scratch for the sake of my own education.</p>
-<p>We&#8217;ll step through it below: by the end of this post we will have created a 3D viewer in
-matplotlib which I think is quite nice.</p>
-</div>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1510,6 +1538,10 @@ matplotlib which I think is quite nice.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/04/15/code-golf-in-python-sudoku/">Code Golf in Python: Sudoku</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">Matplotlib and the Future of Visualization in Python</a>
       </li>
     
@@ -1523,10 +1555,6 @@ matplotlib which I think is quite nice.</p>
     
       <li class="post">
         <a href="/blog/2013/01/13/hacking-super-mario-bros-with-python/">Hacking Super Mario Bros. with Python</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/03/will-scientists-ever-move-to-python-3/">Will Scientists Ever Move to Python 3?</a>
       </li>
     
   </ul>

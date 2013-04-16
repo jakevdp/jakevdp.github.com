@@ -9,10 +9,9 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="There was recently a thread
-on cython-users which caught my eye. It has to do with
-memoryviews, a new
-way of working with memory buffers in cython. I &hellip;">
+  <meta name="description" content="In the previous post, I explored
+how cython typed memoryviews can be used to speed up repeated array
+operations. It became clear that typed &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -885,6 +884,58 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/08/16/memoryview-benchmarks-2/">Memoryview Benchmarks 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-16T14:19:00-07:00" pubdate data-updated="true">Aug 16<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/08/16/memoryview-benchmarks-2/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In the <a href="/blog/2012/08/08/memoryview-benchmarks/">previous post</a>, I explored
+how cython typed memoryviews can be used to speed up repeated array
+operations.  It became clear that typed memoryviews are superior to
+the ndarray syntax for slicing, and as fast as raw pointers for single
+element access.  In the comments, Mathieu brought up an interesting
+question: is the ndarray syntax as good as typed memoryviews if you&#8217;re
+not doing slicing?</p>
+
+<p>The answer turns out to be yes, <em>unless</em> the compiler tries to inline your
+function.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/08/16/memoryview-benchmarks-2/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/08/08/memoryview-benchmarks/">Memoryview Benchmarks</a></h1>
     
     
@@ -955,6 +1006,10 @@ compute the appropriate distances.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/04/15/code-golf-in-python-sudoku/">Code Golf in Python: Sudoku</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">Matplotlib and the Future of Visualization in Python</a>
       </li>
     
@@ -968,10 +1023,6 @@ compute the appropriate distances.</p>
     
       <li class="post">
         <a href="/blog/2013/01/13/hacking-super-mario-bros-with-python/">Hacking Super Mario Bros. with Python</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/03/will-scientists-ever-move-to-python-3/">Will Scientists Ever Move to Python 3?</a>
       </li>
     
   </ul>

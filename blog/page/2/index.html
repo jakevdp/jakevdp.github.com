@@ -9,9 +9,9 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="The recent 0.11 release of scipy includes several new features,
-one of which is the sparse graph submodule
-which I contributed, with help from other &hellip;">
+  <meta name="description" content="Matplotlib is a powerful framework, but its 3D capabilities still have
+a lot of room to grow. The mplot3d
+toolkit allows for several kinds of 3D &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -878,6 +878,63 @@ init_mathjax();
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">Quaternions and Key Bindings: Simple 3D Visualization in Matplotlib</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-24T11:04:00-08:00" pubdate data-updated="true">Nov 24<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="ipynb">
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Matplotlib is a powerful framework, but its 3D capabilities still have
+a lot of room to grow. The <a href="http://matplotlib.org/mpl_toolkits/mplot3d/index.html">mplot3d</a>
+toolkit allows for several kinds of 3D plotting, but the ability to create
+and rotate solid 3D objects is hindered by the inflexibility of the <code>zorder</code> attribute:
+because it is not updated when the view is rotated, things in the &#8220;back&#8221; will cover
+things in the &#8220;front&#8221;, obscuring them and leading to very unnatural-looking results.</p>
+<p>I decided to see if I could create a simple script that addresses this.  Though it would
+be possible to use the built-in <code>mplot3d</code> architecture to take care of rotating and
+projecting the points, I decided to do it from scratch for the sake of my own education.</p>
+<p>We&#8217;ll step through it below: by the end of this post we will have created a 3D viewer in
+matplotlib which I think is quite nice.</p>
+</div>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/11/24/simple-3d-visualization-in-matplotlib/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -1922,58 +1979,6 @@ to be the most useful.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/08/16/memoryview-benchmarks-2/">Memoryview Benchmarks 2</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-08-16T14:19:00-07:00" pubdate data-updated="true">Aug 16<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/08/16/memoryview-benchmarks-2/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In the <a href="/blog/2012/08/08/memoryview-benchmarks/">previous post</a>, I explored
-how cython typed memoryviews can be used to speed up repeated array
-operations.  It became clear that typed memoryviews are superior to
-the ndarray syntax for slicing, and as fast as raw pointers for single
-element access.  In the comments, Mathieu brought up an interesting
-question: is the ndarray syntax as good as typed memoryviews if you&#8217;re
-not doing slicing?</p>
-
-<p>The answer turns out to be yes, <em>unless</em> the compiler tries to inline your
-function.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/08/16/memoryview-benchmarks-2/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1991,6 +1996,10 @@ function.</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/04/15/code-golf-in-python-sudoku/">Code Golf in Python: Sudoku</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/03/23/matplotlib-and-the-future-of-visualization-in-python/">Matplotlib and the Future of Visualization in Python</a>
       </li>
     
@@ -2004,10 +2013,6 @@ function.</p>
     
       <li class="post">
         <a href="/blog/2013/01/13/hacking-super-mario-bros-with-python/">Hacking Super Mario Bros. with Python</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/03/will-scientists-ever-move-to-python-3/">Will Scientists Ever Move to Python 3?</a>
       </li>
     
   </ul>
