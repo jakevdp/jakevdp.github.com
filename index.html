@@ -9,8 +9,11 @@
   <meta name="author" content="Jake Vanderplas">
 
   
-  <meta name="description" content="Edit: based on suggestions from readers, the best solution is down to 162 characters!
-Read to the end to see how A highlight of PyCon each year for &hellip;">
+  <meta name="description" content="My first-ever open source contribution was a C++
+Ball Tree code, with
+a SWIG python wrapper, that I submitted to scikit-learn.
+A Ball Tree
+is a data &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -883,6 +886,97 @@ init_mathjax();
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/04/29/benchmarking-nearest-neighbor-searches-in-python/">Benchmarking Nearest Neighbor Searches in Python</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-29T08:56:00-07:00" pubdate data-updated="true">Apr 29<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/04/29/benchmarking-nearest-neighbor-searches-in-python/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><div class="ipynb">
+
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>My first-ever open source contribution was a C++
+Ball Tree code, with
+a SWIG python wrapper, that I submitted to scikit-learn.
+A <a href="https://en.wikipedia.org/wiki/Ball_tree">Ball Tree</a>
+is a data structure that can be
+used for fast high-dimensional nearest-neighbor searches:
+I&#8217;d written it for some work I was doing on
+nonlinear dimensionality reduction of astronomical data (work
+that eventually led to
+<a href="http://adsabs.harvard.edu/abs/2009AJ....138.1365V">these</a>
+<a href="http://adsabs.harvard.edu/abs/2011AJ....142..203D">two</a> papers),
+and thought that it might find a good home in the scikit-learn
+project, which Gael and others had just begun to bring out of
+hibernation.</p>
+<p>After a short time, it became clear that the C++ code was not performing as
+well as it could be.  I spent a bit of time writing a Cython adaptation of
+the Ball Tree, which is what currently resides in the
+<a href="http://scikit-learn.org/0.13/modules/neighbors.html"><code>sklearn.neighbors</code></a>
+module.  Though this implementation is fairly fast, it still has several
+weaknesses:</p>
+<ul>
+<li>It only works with a Minkowski distance metric (of which Euclidean is a
+  special case).  In general, a ball tree can be written to handle any
+  true metric (i.e. one which obeys the triangle inequality).</li>
+<li>It implements only the single-tree approach, not the potentially faster
+  dual-tree approach in which a ball tree is constructed for both the training
+  and query sets.</li>
+<li>It implements only nearest-neighbors queries, and not any of the other
+  tasks that a ball tree can help optimize: e.g. kernel density estimation,
+  N-point correlation function calculations, and other so-called
+  <a href="http://www.fast-lab.org/nbodyproblems.html">Generalized N-body Problems</a>.</li>
+</ul>
+<p>I had started running into these limits when creating astronomical data
+analysis examples for <a href="http://www.astroML.org">astroML</a>,
+the Python library for Astronomy and Machine Learning Python
+that I released last fall.  I&#8217;d been thinking about it for a while, and
+finally decided it was time to invest the effort into updating and
+enhancing the Ball Tree.  It took me longer than I planned (in fact, some of my
+<a href="http://jakevdp.github.io/blog/2012/08/08/memoryview-benchmarks/">first posts</a>
+on this blog last August came out of the benchmarking experiments aimed at
+this task), but just a couple weeks ago I finally got things working and submitted
+a <a href="https://github.com/scikit-learn/scikit-learn/pull/1732">pull request</a>
+to scikit-learn with the new code.</p>
+<p>Here I want to highlight some of the features of the new ball tree and kd-tree
+code that&#8217;s part of this pull request, compare it to what&#8217;s available in the
+<code>scipy.spatial.cKDTree</code> implementation, and run a few benchmarks showing the
+performance of these methods on various data sets.</p>
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/29/benchmarking-nearest-neighbor-searches-in-python/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/04/15/code-golf-in-python-sudoku/">Code Golf in Python: Sudoku</a></h1>
     
     
@@ -1476,56 +1570,6 @@ in the Python language is an object.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/">3D Interactive Rubik&#8217;s Cube in Python</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-26T22:00:00-08:00" pubdate data-updated="true">Nov 26<span>th</span>, 2012</time>
-        
-         | <a href="/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Over the weekend, I built a interactive 3D Rubik&#8217;s cube simulator in python
-using only <a href="http://matplotlib.org">matplotlib</a> for all the graphics and
-interaction.  Check out the demonstration here:</p>
-
-<p><video width='680' height='400' preload='none' controls poster=' /downloads/videos/MagicCube_frame.jpg'><source src='/downloads/videos/MagicCube.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video></p>
-
-<p>You can browse the source code at the MagicCube github repository:
-<a href="http://github.com/davidwhogg/MagicCube">http://github.com/davidwhogg/MagicCube</a>.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2012/11/26/3d-interactive-rubiks-cube-in-python/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1541,6 +1585,10 @@ interaction.  Check out the demonstration here:</p>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/04/29/benchmarking-nearest-neighbor-searches-in-python/">Benchmarking Nearest Neighbor Searches in Python</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/04/15/code-golf-in-python-sudoku/">Code Golf in Python: Sudoku</a>
       </li>
     
@@ -1554,10 +1602,6 @@ interaction.  Check out the demonstration here:</p>
     
       <li class="post">
         <a href="/blog/2013/02/02/setting-up-a-mac-for-python-development/">Setting Up a Mac for Python Development</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/01/13/hacking-super-mario-bros-with-python/">Hacking Super Mario Bros. with Python</a>
       </li>
     
   </ul>
